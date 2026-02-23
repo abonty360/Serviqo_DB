@@ -31,18 +31,28 @@ class AuthPagesTest extends TestCase
     }
 
     /**
-     * Test that the home page no longer contains the login/register modals and has direct links.
+     * Test that the home page initially shows login/signup links and no profile icon.
      */
-    public function test_home_page_does_not_contain_auth_modals_and_has_links(): void
+    public function test_home_page_shows_login_signup_links_when_not_logged_in(): void
     {
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertDontSee('id="loginModal"');
-        $response->assertDontSee('id="registerModal"');
-        $response->assertDontSee('onclick="toggleModal(\'loginModal\')"', false);
-        $response->assertDontSee('onclick="toggleModal(\'registerModal\')"', false);
         $response->assertSee('<a href="/login"', false);
         $response->assertSee('<a href="/signup"', false);
+        $response->assertDontSee('<a href="/profile"', false); // Ensure profile is not visible
+    }
+
+    /**
+     * Test that the home page shows profile icon and hides login/signup links when logged in.
+     */
+    public function test_home_page_shows_profile_icon_when_logged_in(): void
+    {
+        $response = $this->withSession(['logged_in' => true])->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('<a href="/profile"', false);
+        $response->assertDontSee('<a href="/login"', false); // Ensure login is not visible
+        $response->assertDontSee('<a href="/signup"', false); // Ensure signup is not visible
     }
 }

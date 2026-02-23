@@ -29,8 +29,14 @@
             <a href="#" class="hover:text-green-600 transition">Become a Pro</a>
         </div>
         <div class="flex space-x-4">
-            <a href="/login" class="px-5 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">Login</a>
-            <a href="/signup" class="px-5 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-md transition">Sign Up</a>
+            @if (session('logged_in'))
+                <a href="/profile" class="px-5 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">
+                    <i class="fas fa-user-circle text-xl"></i> Profile
+                </a>
+            @else
+                <a href="/login" class="px-5 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">Login</a>
+                <a href="/signup" class="px-5 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-md transition">Sign Up</a>
+            @endif
         </div>
     </nav>
 

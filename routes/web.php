@@ -24,8 +24,8 @@ Route::get('/login', function () {
 
 Route::post('/login', function () {
     // Handle login logic here
-    // For now, just redirect to home page after "successful" login
-    return redirect('/');
+    // For now, just redirect to home page after "successful" login with a 'logged_in' flash message
+    return redirect('/')->with('logged_in', true);
 });
 
 Route::get('/signup', function () {
