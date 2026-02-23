@@ -23,19 +23,19 @@
             </div>
             <span class="text-2xl font-bold text-gray-900 tracking-tight">Serviqo</span>
         </div>
-        <div class="hidden md:flex space-x-8 font-medium text-gray-600">
+        <div class="hidden md:flex ml-auto space-x-10 font-medium text-gray-600">
             <a href="#" class="hover:text-green-600 transition">Services</a>
             <a href="#" class="hover:text-green-600 transition">How it Works</a>
             <a href="#" class="hover:text-green-600 transition">Become a Pro</a>
         </div>
         <div class="flex space-x-4">
             @if (session('logged_in'))
-                <a href="/profile" class="px-5 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">
+                <a href="/profile" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">
                     <i class="fas fa-user-circle text-xl"></i> Profile
                 </a>
             @else
-                <a href="/login" class="px-5 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">Login</a>
-                <a href="/signup" class="px-5 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-md transition">Sign Up</a>
+                <a href="/login" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">Login</a>
+                <a href="/signup" class="px-7 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-md transition">Sign Up</a>
             @endif
         </div>
     </nav>
