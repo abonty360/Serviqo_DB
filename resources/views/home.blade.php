@@ -323,24 +323,54 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-800 pb-8 mb-8">
-                <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                    <div class="w-8 h-8 bg-green-500 rounded flex items-center justify-center">
-                        <i class="fas fa-tools text-white text-sm"></i>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-green-500 rounded flex items-center justify-center">
+                            <i class="fas fa-tools text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight">Serviqo</span>
                     </div>
-                    <span class="text-xl font-bold tracking-tight">Serviqo</span>
+                    <p class="text-gray-400 text-sm">Your trusted partner for all home services.</p>
                 </div>
-                <div class="flex space-x-6 text-gray-400">
-                    <a href="#" class="hover:text-green-500 transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-green-500 transition"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-green-500 transition"><i class="fab fa-instagram"></i></a>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Cleaning</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Repair</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Maintenance</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Beauty</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-500 transition text-sm">FAQs</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
-                <p>&copy; 2026 Serviqo Service Booking Platform. All rights reserved.</p>
+
+            <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+                <p>&copy; 2026 Serviqo. All rights reserved.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
