@@ -1,36 +1,53 @@
-# Laravel API Starter Template
+# Serviqo: Home-Service Booking Platform
 
-This is a **Laravel API-only starter template** intended for students to build their own projects. 
+This is a **Home-Service Booking and Management Platform** intended to connect customers with verified service providers offering on-demand services.
 
-The backend is fully prepared for RESTful API development, and students are expected to create a frontend separately in a `client` folder.
+The platform will allow customers to search for services, place service requests, schedule appointments, make payments, and submit feedback after service completion. Service providers will be able to register on the system, manage service listings, set pricing, and handle service orders efficiently.
 
 ---
 
 ## Features
 
-- Laravel 10 backend
-- API routes only (no Blade templates)
-- Sanctum authentication setup (optional)
-- Ready for React or other frontend clients
-- Example routes and controllers to get started
+- Customer registration and profile management
+- Location-based filtering of services and service providers
+- Service category and subservice management
+- Service order placement and scheduling
+- Order status tracking
+- Rating and review submission by customers
+- A scalable and normalized database structure
 
 ---
 
-## Prerequisites
-
-Make sure you have the following installed:
-
-- PHP >= 8.1
-- Composer
-- MySQL / PostgreSQL / SQLite
-- Node.js and npm/yarn (for the frontend client)
-
----
 
 ## Installation
 
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/abonty360/Serviqo_DB.git
+cd Serviqo
+```
+2. **Install composer**
+   
+```bash
+composer install
+```
+3. **Generate Key**
+   
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+4. **Connect to Database (SQL)**
+
+5. **Migrate Tables**
+
+```bash
+php artisan migration
+```
+   
+7. **Run The Project**
+   
+```bash
+   php artisan serve
+```
