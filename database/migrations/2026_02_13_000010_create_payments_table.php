@@ -10,16 +10,13 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('service_order_id') // OrderID (FK)
+            $table->foreignId('service_order_id') 
                 ->constrained()
                 ->cascadeOnDelete();
 
             $table->string('payment_method');
-
             $table->decimal('paid_amount', 10, 2);
-
             $table->timestamp('payment_datetime')->useCurrent();
-
             $table->string('transaction_reference')->nullable();
             $table->timestamps();
         });
