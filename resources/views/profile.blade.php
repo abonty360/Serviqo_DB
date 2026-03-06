@@ -15,29 +15,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Navigation (Same as home) -->
-    <nav class="flex items-center justify-between px-8 py-4 bg-white border-b sticky top-0 z-50">
-        <div class="flex items-center space-x-2">
-            <a href="/" class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-tools text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-bold text-gray-900 tracking-tight">Serviqo</span>
-            </a>
-        </div>
-        <div class="hidden md:flex ml-auto space-x-10 font-medium text-gray-600">
-            <a href="/" class="hover:text-green-600 transition">Services</a>
-            <a href="/" class="hover:text-green-600 transition">How it Works</a>
-        </div>
-        <div class="flex items-center space-x-4 ml-6">
-            <a href="/profile" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition flex items-center">
-                <i class="fas fa-user-circle text-xl mr-2"></i> User
-            </a>
-            <a href="/logout" class="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center">
-                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-            </a>
-        </div>
-    </nav>
+    @include('components.navbar')
 
     <main class="container mx-auto px-6 py-12">
         <div class="max-w-4xl mx-auto">
