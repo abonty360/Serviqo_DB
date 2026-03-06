@@ -73,25 +73,45 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Division</label>
-                    <div class="relative">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Custom Division Dropdown -->
+                    <div class="relative dropdown-container" id="divisionContainer">
+                        <button type="button" id="divisionButton" class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition bg-white text-gray-700 text-left flex items-center justify-between">
+                            <span id="divisionLabel">Select Division</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
                             <i class="fas fa-map-marker-alt"></i>
                         </span>
-                        <select name="division" required class="block w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition appearance-none bg-white text-gray-700">
-                            <option value="" disabled selected>Select Division</option>
-                            <option value="Dhaka">Dhaka</option>
-                            <option value="Chittagong">Chittagong</option>
-                            <option value="Sylhet">Sylhet</option>
-                            <option value="Barisal">Barisal</option>
-                            <option value="Rangpur">Rangpur</option>
-                            <option value="Rajshahi">Rajshahi</option>
-                            <option value="Khulna">Khulna</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
-                            <i class="fas fa-chevron-down text-xs"></i>
+                        <div id="divisionMenu" class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                            <div class="p-1">
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Dhaka">Dhaka</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Chittagong">Chittagong</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Sylhet">Sylhet</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Barisal">Barisal</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Rangpur">Rangpur</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Rajshahi">Rajshahi</div>
+                                <div class="division-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="Khulna">Khulna</div>
+                            </div>
                         </div>
+                        <input type="hidden" name="division" id="divisionInput" required>
+                    </div>
+
+                    <!-- Custom Region Dropdown -->
+                    <div class="relative dropdown-container" id="regionContainer">
+                        <button type="button" id="regionButton" class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition bg-white text-gray-700 text-left flex items-center justify-between">
+                            <span id="regionLabel">Select Region</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
+                            <i class="fas fa-globe"></i>
+                        </span>
+                        <div id="regionMenu" class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                            <div id="regionOptionsList" class="p-1">
+                                <div class="px-4 py-2 text-gray-400 text-sm">Please select a division first</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="region" id="regionInput" required>
                     </div>
                 </div>
 
@@ -132,15 +152,86 @@
                 </button>
             </form>
 
-            <div class="mt-8 text-center border-t border-gray-100 pt-6">
+            <div class="mt-4 text-center border-t border-gray-100 pt-4">
                 <p class="text-gray-600">Already have an account? 
                     <a href="/login" class="font-bold text-green-600 hover:text-green-700">Login Now</a>
                 </p>
+                <div class="mt-4">
+                    <a href="/guest" class="text-base font-bold text-green-600 hover:text-green-700 transition-colors">
+                        Continue as Guest
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        const regionData = {
+            'Dhaka': ['Mirpur', 'Dhanmondi', 'Uttara', 'Gulshan','Banani','Mohammadpur', 'Tejgaon', 'Motijheel', 'Paltan', 'Savar', 'Keraniganj', 'Dohar'],
+            'Chittagong': ["Cox's Bazar", 'Panchlaish', 'Halishahar', 'Pahartali', 'Chandgaon', 'Sitakunda', 'Rangunia', 'Sandwip', 'Mirsharai', 'Boalkhali'],
+            'Sylhet': ['Zindabazar', 'Amberkhana', 'Tilagor', 'Noyashahar', 'Kumarpara', 'Moglabazar', 'Gowainghat', 'Beanibazar', 'Balaganj', 'Fenchuganj'],
+            'Barisal': ['Sadatpur', 'Amtali','Agailjhara', 'Babuganj', 'Bakerganj', 'Banaripara', 'Gournadi', 'Hizla', 'Mehendiganj', 'Muladi', 'Wazirpur'],
+            'Rangpur': ['Modern More', 'Kaunia', 'Gangachara', 'Pirgachha', 'Badarganj', 'Mithapukur', 'Pirganj', 'Rangpur Sadar', 'Taraganj', 'Pirgachha'],
+            'Rajshahi': ['Motihar', 'Boalia','Paba', 'Durgapur', 'Bagha', 'Bagmara', 'Charghat', 'Godagari', 'Tanore', 'Puthia', 'Mohonpur'],
+            'Khulna': ['Boyra', 'Khalishpur', 'Sonadanga', 'Daulatpur', 'Dumuria', 'Dighalia', 'Batiaghata', 'Phultala', 'Rupsha', 'Terokhada', 'Paikgachha']
+        };
+
+        // Custom Dropdown Logic
+        function setupDropdown(buttonId, menuId, labelId, inputId, optionClass, onSelect) {
+            const button = document.getElementById(buttonId);
+            const menu = document.getElementById(menuId);
+            const label = document.getElementById(labelId);
+            const input = document.getElementById(inputId);
+
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close other dropdowns
+                document.querySelectorAll('[id$="Menu"]').forEach(m => {
+                    if (m.id !== menuId) m.classList.add('hidden');
+                });
+                menu.classList.toggle('hidden');
+            });
+
+            // delegated listener for options
+            menu.addEventListener('click', (e) => {
+                const option = e.target.closest('.' + optionClass);
+                if (option) {
+                    const value = option.getAttribute('data-value');
+                    label.textContent = value;
+                    input.value = value;
+                    menu.classList.add('hidden');
+                    if (onSelect) onSelect(value);
+                }
+            });
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('[id$="Menu"]').forEach(m => m.classList.add('hidden'));
+        });
+
+        // Initialize Division Dropdown
+        setupDropdown('divisionButton', 'divisionMenu', 'divisionLabel', 'divisionInput', 'division-option', (division) => {
+            // Update Region Dropdown
+            const regionOptionsList = document.getElementById('regionOptionsList');
+            const regions = regionData[division] || [];
+            
+            // Reset Region
+            document.getElementById('regionLabel').textContent = 'Select Region';
+            document.getElementById('regionInput').value = '';
+
+            if (regions.length > 0) {
+                regionOptionsList.innerHTML = regions.map(region => `
+                    <div class="region-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="${region}">${region}</div>
+                `).join('');
+            } else {
+                regionOptionsList.innerHTML = '<div class="px-4 py-2 text-gray-400 text-sm">No regions available</div>';
+            }
+        });
+
+        // Initialize Region Dropdown
+        setupDropdown('regionButton', 'regionMenu', 'regionLabel', 'regionInput', 'region-option');
+
         function validatePasswords() {
             const pass = document.getElementById('regPassword').value;
             const confirm = document.getElementById('regConfirmPassword').value;

@@ -26,13 +26,17 @@
         <div class="hidden md:flex ml-auto space-x-10 font-medium text-gray-600">
             <a href="#" class="hover:text-green-600 transition">Services</a>
             <a href="#" class="hover:text-green-600 transition">How it Works</a>
-            <a href="#" class="hover:text-green-600 transition">Become a Pro</a>
         </div>
-        <div class="flex space-x-4">
+        <div class="flex items-center space-x-4 ml-6">
             @if (session('logged_in'))
-                <a href="/profile" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">
-                    <i class="fas fa-user-circle text-xl"></i> Profile
+                <a href="/profile" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition flex items-center">
+                    <i class="fas fa-user-circle text-xl mr-2"></i> User
                 </a>
+                <a href="/logout" class="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            @elseif (session('is_guest'))
+                {{-- No buttons shown for guest users --}}
             @else
                 <a href="/login" class="px-7 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">Login</a>
                 <a href="/signup" class="px-7 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 shadow-md transition">Sign Up</a>

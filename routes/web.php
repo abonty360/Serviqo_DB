@@ -17,12 +17,13 @@ Route::get('/', function () {
     return view('home');
 });
 
+// Authentication Routes for separate pages
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
 Route::post('/login', function () {
-    // In a real app, authentication logic would go here.
+    session(['logged_in' => true, 'is_guest' => false]);
     return redirect('/');
 });
 
@@ -31,7 +32,24 @@ Route::get('/signup', function () {
 })->name('signup');
 
 Route::post('/signup', function () {
-    // In a real app, registration logic would go here.
-    // Returning to login page with signup=success query parameter
-    return redirect('/login?signup=success');
+    // Handle registration logic here
+    // Redirect to login with success message after successful signup
+    return redirect()->route('login', ['signup' => 'success']);
+});
+
+Route::get('/guest', function () {
+    session(['is_guest' => true]);
+    return redirect('/');
+});
+
+Route::get('/logout', function () {
+    session()->flush();
+    return redirect('/');
+});
+
+Route::get('/profile', function () {
+    if (!session('logged_in')) {
+        return redirect('/login');
+    }
+    return view('profile');
 });

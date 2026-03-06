@@ -71,6 +71,11 @@
                 <p class="text-gray-600">Don't have an account? 
                     <a href="/signup" class="font-bold text-green-600 hover:text-green-700">Create Account</a>
                 </p>
+                <div class="mt-4">
+                    <a href="/guest" class="text-base font-bold text-green-600 hover:text-green-700 transition-colors">
+                        Continue as Guest
+                    </a>
+                </div>
             </div>
         </div>
     </div>
