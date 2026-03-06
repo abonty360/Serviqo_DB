@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/login', function () {
-    return view('login');
+    return view('auth.login');
 })->name('login');
 
 Route::post('/login', function () {
@@ -27,7 +27,7 @@ Route::post('/login', function () {
 });
 
 Route::get('/signup', function () {
-    return view('signup');
+    return view('auth.signup');
 })->name('signup');
 
 Route::post('/signup', function () {
