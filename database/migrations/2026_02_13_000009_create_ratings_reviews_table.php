@@ -17,11 +17,11 @@ return new class extends Migration {
 
             $table->foreignId('service_provider_id') 
                 ->constrained()
-                ->noActionOnDelete();
+                ->cascadeOnDelete();
 
             $table->foreignId('service_order_id') 
                 ->constrained()
-                ->noActionOnDelete();
+                ->cascadeOnDelete();
 
             $table->integer('rating'); 
             $table->date('review_date')->useCurrent();
