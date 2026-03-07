@@ -39,7 +39,8 @@ class Handler extends ExceptionHandler
         // Default response for unexpected exceptions
         return response()->json([
             'error' => true,
-            'message' => 'An unexpected error occurred',
+            'message' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString(),
         ], 500);
 
     }
