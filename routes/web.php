@@ -34,3 +34,4 @@ Route::get('/guest', function () {
     return redirect('/');
 });
 
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');

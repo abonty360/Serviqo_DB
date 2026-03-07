@@ -75,4 +75,22 @@ class AuthController extends Controller
         }
     }
 
+    public function logout()
+    {
+        try {
+            auth('api')->logout();
+
+            return response()->json([
+                "error" => false,
+                "message" => "Logged out successfully"
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => true,
+                "message" => "Token not provided or already invalid"
+            ], 400);
+        }
+    }
+
 }
