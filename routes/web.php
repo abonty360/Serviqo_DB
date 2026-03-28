@@ -47,4 +47,8 @@ Route::get('/book', function () {
     return view('booking');
 })->name('book');
 
+Route::get('/how-it-works', function () {
+    return view('how-it-works');
+})->name('how-it-works');
+
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
