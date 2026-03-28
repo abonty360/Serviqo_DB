@@ -50,5 +50,8 @@ Route::get('/book', function () {
 Route::get('/how-it-works', function () {
     return view('how-it-works');
 })->name('how-it-works');
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
