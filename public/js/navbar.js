@@ -2,6 +2,7 @@ function renderNavbar() {
 
     const token = localStorage.getItem("token");
     const container = document.getElementById("authButtons");
+    if (!container) return;
 
     if (token) {
 
@@ -42,7 +43,8 @@ async function logoutUser() {
     });
 
     localStorage.removeItem("token");
+    renderNavbar();
     window.location.href = "/login";
 }
-
-renderNavbar();
+document.addEventListener("DOMContentLoaded", renderNavbar);
+window.addEventListener("pageshow", renderNavbar);

@@ -193,7 +193,15 @@
             <p>&copy; 2026 Serviqo. All rights reserved.</p>
         </div>
     </footer>
+    <script>
+        window.addEventListener("pageshow", function () {
+            const token = localStorage.getItem("token");
 
+            if (!token) {
+                window.location.replace("/login");
+            }
+        });
+    </script>
 </body>
 
 </html>
