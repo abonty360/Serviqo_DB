@@ -173,7 +173,7 @@
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Cleaning Services</h3>
                         <p class="text-gray-600 mb-4">Professional home and office cleaning</p>
-                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                          <a href="{{ route('book', ['service' => 'cleaning']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
                             Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
                         </a>
                     </div>
@@ -186,7 +186,7 @@
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Appliance Repair</h3>
                         <p class="text-gray-600 mb-4">Fix AC, fridge, washing machine & more</p>
-                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                         <a href="{{ route('book', ['service' => 'maintenance']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
                             Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
                         </a>
                     </div>
@@ -212,7 +212,7 @@
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Beauty & Makeover</h3>
                         <p class="text-gray-600 mb-4">Salon services at your doorstep</p>
-                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                          <a href="{{ route('book', ['service' => 'beauty']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
                             Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
                         </a>
                     </div>
@@ -225,7 +225,7 @@
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Pest Control</h3>
                         <p class="text-gray-600 mb-4">Complete pest management solutions</p>
-                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                              <a href="{{ route('book', ['service' => 'pest']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
                             Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
                         </a>
                     </div>
@@ -238,7 +238,7 @@
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Painting</h3>
                         <p class="text-gray-600 mb-4">Interior and exterior painting</p>
-                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                        <a href="{{ route('book', ['service' => 'painting']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
                             Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
                         </a>
                     </div>

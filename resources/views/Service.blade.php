@@ -41,7 +41,7 @@
                         <p class="text-gray-600 mb-6">Professional home and office cleaning including deep cleaning, kitchen cleaning, and bathroom sanitization.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$29 - $199</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                           <a href="{{ route('book', ['service' => 'cleaning']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         <p class="text-gray-600 mb-6">Expert repair for AC, refrigerator, washing machine, microwave, and other essential home appliances.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$49 - $250</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'repair']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         <p class="text-gray-600 mb-6">Reliable plumbing, electrical work, carpentry, and general home maintenance services by certified professionals.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$35 - $150</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'maintenance']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                         <p class="text-gray-600 mb-6">Get salon-quality beauty services, haircuts, facials, and massages in the comfort of your own home.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$15 - $120</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'beauty']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         <p class="text-gray-600 mb-6">Effective and safe pest management for termites, cockroaches, rodents, and other unwanted visitors.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$60 - $300</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'pest']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                         <p class="text-gray-600 mb-6">Transform your space with our professional interior and exterior painting services. Free color consultation included.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$199 - $2000+</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'painting']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                         <p class="text-gray-600 mb-6">Professional car wash, detailing, interior cleaning, and minor repairs right at your doorstep.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$19 - $149</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'car']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                         <p class="text-gray-600 mb-6">Hassle-free travel planning, ticket booking, and local tour guides for your next adventure.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$99 - $999+</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'travel']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                         <p class="text-gray-600 mb-6">Professional nursing care, physiotherapy, and elderly assistance services at home.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$25 - $200/day</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'health']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                         <p class="text-gray-600 mb-6">Reliable packing and moving services for smooth relocation. We handle your belongings with care.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$150 - $1500+</span>
-                            <a href="#" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'shifting']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
