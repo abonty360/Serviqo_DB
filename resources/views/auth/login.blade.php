@@ -123,6 +123,18 @@
             }
         });
     </script>
+        <script>
+        function redirectIfLoggedIn() {
+            const token = localStorage.getItem("token");
+
+            if (token) {
+                window.location.replace("/");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", redirectIfLoggedIn);
+        window.addEventListener("pageshow", redirectIfLoggedIn);
+    </script>
 </body>
 
 </html>

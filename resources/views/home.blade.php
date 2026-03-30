@@ -17,7 +17,7 @@
 
 <body class="bg-white text-gray-800">
 
-    @include('components.navbar')
+@include('components.navbar')
     <!-- Hero Section -->
     <header class="relative bg-gradient-to-br from-green-50 to-white py-20 lg:py-32 overflow-hidden">
         <div class="container mx-auto px-6 relative z-10">
@@ -49,10 +49,10 @@
                             <option value="painting">House Painting</option>
                         </select>
                     </div>
-                    <button
-                        class="w-full md:w-auto px-10 py-4 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-all shadow-lg hover:shadow-green-200">
+                    <a href="{{ route('services') }}"
+                        class="w-full md:w-auto px-10 py-4 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-all shadow-lg hover:shadow-green-200 text-center">
                         Search
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Popular Services Tags -->
@@ -166,82 +166,82 @@
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Cleaning -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-broom text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Cleaning.jpg') }}" alt="Cleaning" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Cleaning Services</h3>
-                    <p class="text-gray-600 mb-4">Professional home and office cleaning</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Cleaning Services</h3>
+                        <p class="text-gray-600 mb-4">Professional home and office cleaning</p>
+                          <a href="{{ route('book', ['service' => 'cleaning']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- Appliance Repair -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-plug text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Reapir.jpg') }}" alt="Appliance Repair" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Appliance Repair</h3>
-                    <p class="text-gray-600 mb-4">Fix AC, fridge, washing machine & more</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Appliance Repair</h3>
+                        <p class="text-gray-600 mb-4">Fix AC, fridge, washing machine & more</p>
+                         <a href="{{ route('book', ['service' => 'maintenance']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- Maintenance -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-tools text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                         <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Plumbing.jpg') }}" alt="Maintenance" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Maintenance</h3>
-                    <p class="text-gray-600 mb-4">Plumbing, electrical, carpentry services</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Maintenance</h3>
+                        <p class="text-gray-600 mb-4">Plumbing, electrical, carpentry services</p>
+                        <a href="{{ route('services') }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- Beauty -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-spa text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Makeup.jpg') }}" alt="Beauty & Makeover" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Beauty & Makeover</h3>
-                    <p class="text-gray-600 mb-4">Salon services at your doorstep</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Beauty & Makeover</h3>
+                        <p class="text-gray-600 mb-4">Salon services at your doorstep</p>
+                          <a href="{{ route('book', ['service' => 'beauty']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- Pest Control -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-bug-slash text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Pest.jpg') }}" alt="Pest Control" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Pest Control</h3>
-                    <p class="text-gray-600 mb-4">Complete pest management solutions</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Pest Control</h3>
+                        <p class="text-gray-600 mb-4">Complete pest management solutions</p>
+                              <a href="{{ route('book', ['service' => 'pest']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- Painting -->
-                <div
-                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
-                    <div
-                        class="w-14 h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                        <i class="fas fa-paint-roller text-2xl"></i>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
+                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img src="{{ asset('Images/Painting.jpg') }}" alt="Painting" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Painting</h3>
-                    <p class="text-gray-600 mb-4">Interior and exterior painting</p>
-                    <a href="#" class="text-green-600 font-semibold flex items-center group-hover:underline">
-                        Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </a>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-2">Painting</h3>
+                        <p class="text-gray-600 mb-4">Interior and exterior painting</p>
+                        <a href="{{ route('book', ['service' => 'painting']) }}" class="text-green-600 font-semibold flex items-center group-hover:underline">
+                            Book Now <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -395,5 +395,3 @@
         </div>
     </footer>
 </body>
-
-</html>
