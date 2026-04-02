@@ -51,6 +51,102 @@
 
             document.getElementById("profilePhone").textContent =
                 user.phone ?? "Not provided";
+
+            // Store user data globally for the edit form
+            window.currentUserData = user;
+        }
+
+        async function submitEditProfile(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = document.getElementById('saveProfileBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+            submitBtn.disabled = true;
+            
+            document.getElementById('editProfileError').classList.add('hidden');
+            document.getElementById('editProfileSuccess').classList.add('hidden');
+
+            const formData = {
+                fname: form.fname.value,
+                lname: form.lname.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                address: form.address.value,
+                city: form.city.value,
+                region: form.region.value,
+                dob: form.dob.value
+            };
+
+            const token = localStorage.getItem("token");
+
+            try {
+                const response = await fetch("/api/profile", {
+                    method: 'PUT',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to update profile. Please check your inputs.');
+                }
+
+                // Show success message
+                document.getElementById('editProfileSuccess').classList.remove('hidden');
+                
+                // Reload profile data on page
+                loadProfile();
+                
+                // Close modal after delay
+                setTimeout(() => {
+                    toggleEditModal('close');
+                }, 1500);
+                
+            } catch (error) {
+                const errorDiv = document.getElementById('editProfileError');
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                // Restore button state
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function toggleEditModal(action) {
+            const modal = document.getElementById('editProfileModal');
+            
+            if (action === 'open') {
+                // Populate form with current user data
+                const user = window.currentUserData;
+                if (user) {
+                    document.getElementById('edit_fname').value = user.fname || '';
+                    document.getElementById('edit_lname').value = user.lname || '';
+                    document.getElementById('edit_email').value = user.email || '';
+                    document.getElementById('edit_phone').value = user.phone || '';
+                    document.getElementById('edit_address').value = user.address || '';
+                    document.getElementById('edit_city').value = user.city || '';
+                    document.getElementById('edit_region').value = user.region || '';
+                    document.getElementById('edit_dob').value = user.dob || '';
+                }
+                
+                // Hide messages
+                document.getElementById('editProfileError').classList.add('hidden');
+                document.getElementById('editProfileSuccess').classList.add('hidden');
+                
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
         }
 
         loadProfile();
@@ -70,6 +166,7 @@
                             </div>
                         </div>
                         <button
+                            onclick="toggleEditModal('open')"
                             class="px-6 py-2 bg-white border border-gray-200 rounded-xl font-semibold hover:bg-gray-50 transition shadow-sm">
                             Edit Profile
                         </button>
@@ -185,7 +282,99 @@
                     </div>
                 </div>
             </div>
+        <!-- Edit Profile Modal -->
+        <div id="editProfileModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl my-8">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-3xl z-10">
+                    <h2 class="text-2xl font-bold text-gray-900">Edit Profile</h2>
+                    <button onclick="toggleEditModal('close')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[70vh] overflow-y-auto">
+                    <!-- Alerts -->
+                    <div id="editProfileError" class="hidden mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100"></div>
+                    <div id="editProfileSuccess" class="hidden mb-6 p-4 bg-green-50 text-green-600 rounded-xl text-sm font-medium border border-green-100">
+                        Profile updated successfully!
+                    </div>
+
+                    <form id="editProfileForm" onsubmit="submitEditProfile(event)" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Name fields -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+                                <input type="text" id="edit_fname" name="fname" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                                <input type="text" id="edit_lname" name="lname" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+
+                            <!-- Contact fields -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                                <input type="email" id="edit_email" name="email" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                <input type="text" id="edit_phone" name="phone" required placeholder="01XXXXXXXXX"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+
+                            <!-- Personal fields -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
+                                <input type="date" id="edit_dob" name="dob" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                            
+                            <!-- Location fields -->
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Detailed Address</label>
+                                <textarea id="edit_address" name="address" rows="2"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                                <select id="edit_city" name="city" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white appearance-none">
+                                    <option value="">Select City</option>
+                                    <option value="Dhaka">Dhaka</option>
+                                    <option value="Chittagong">Chittagong</option>
+                                    <option value="Sylhet">Sylhet</option>
+                                    <option value="Barisal">Barisal</option>
+                                    <option value="Rangpur">Rangpur</option>
+                                    <option value="Rajshahi">Rajshahi</option>
+                                    <option value="Khulna">Khulna</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Region/Area</label>
+                                <input type="text" id="edit_region" name="region" required placeholder="e.g., Gulshan, Dhanmondi"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-gray-100 flex justify-end space-x-4 sticky bottom-0 bg-white z-10">
+                            <button type="button" onclick="toggleEditModal('close')"
+                                class="px-6 py-3 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition">
+                                Cancel
+                            </button>
+                            <button type="submit" id="saveProfileBtn"
+                                class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-sm hover:shadow transition flex items-center">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+
     </main>
 
     <footer class="bg-white border-t border-gray-100 py-12">
