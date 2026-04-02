@@ -11,7 +11,6 @@ Route::put('/items/{id}', [UsersController::class, 'update']);
 Route::patch('/items/{id}', [UsersController::class, 'patch']);
 Route::delete('/items/{id}', [UsersController::class, 'destroy']);
 
-
 Route::post('/register', [AuthController::class,'register']);
 Route::post('/login', [AuthController::class,'login']);
 
@@ -24,6 +23,8 @@ Route::middleware(['auth:api','prevent-back-history'])->group(function () {
     Route::get('/me', function () {
         return response()->json(auth('api')->user());
     });
+
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
 
     Route::post('/logout', [AuthController::class,'logout']);
 
