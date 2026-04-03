@@ -21,7 +21,11 @@ Route::middleware(['auth:api','prevent-back-history'])->group(function () {
     });
 
     Route::get('/me', function () {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        if ($user) {
+            $user->load(['serviceOrders.items.offering.subService']);
+        }
+        return response()->json($user);
     });
 
     Route::put('/profile', [AuthController::class, 'updateProfile']);
