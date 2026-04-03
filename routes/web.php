@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,14 +43,16 @@ Route::get('/services', function () {
     return view('Service');
 })->name('services');
 
-
 Route::get('/book', function () {
     return view('booking');
 })->name('book');
+Route::post('/book', [BookingController::class, 'store'])->name('book.store');
+Route::post('/book/{id}/complete', [BookingController::class, 'complete'])->name('book.complete');
 
 Route::get('/how-it-works', function () {
     return view('how-it-works');
 })->name('how-it-works');
+
 Route::get('/about', function () {
     return view('about');
 })->name('about');
