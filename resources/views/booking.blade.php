@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Service - Serviqo</title>
+    <title>Order a Service - Serviqo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -28,7 +28,7 @@
                         <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
                             <i class="fas fa-calendar-check text-3xl"></i>
                         </div>
-                        <h2 class="text-3xl font-bold mb-4">Book Your Service</h2>
+                        <h2 class="text-3xl font-bold mb-4">Order Your Service</h2>
                         <p class="text-green-50 opacity-90 leading-relaxed">
                             Fill out the form to schedule a professional service at your convenience.
                         </p>
@@ -176,7 +176,7 @@
 
                         <button type="submit"
                             class="w-full py-4 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 shadow-lg shadow-green-200 transition-all transform hover:-translate-y-0.5 mt-4">
-                            Confirm Booking
+                            Confirm Order
                         </button>
                     </form>
                 </div>
@@ -190,7 +190,7 @@
             <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-check text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Confirmed</h3>
             <p class="text-gray-500 mb-8">Thanks for being with us.</p>
             <button id="closeModal" class="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-all">
                 Great!
@@ -221,8 +221,30 @@
 
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Show modal
-                confirmationModal.classList.remove('hidden');
+                
+                const formData = new FormData(bookingForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                fetch('{{ route("book.store") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if(result.success) {
+                        confirmationModal.classList.remove('hidden');
+                    } else {
+                        alert('Error: ' + (result.message || 'Validation failed'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during the order.');
+                });
             });
 
             closeModal.addEventListener('click', function() {
