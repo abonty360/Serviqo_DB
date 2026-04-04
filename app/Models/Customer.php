@@ -20,7 +20,8 @@ class Customer extends Authenticatable implements JWTSubject
         'address',
         'city',
         'region',
-        'preferred_payment_method'
+        'preferred_payment_method',
+        'role'
     ];
 
     protected $hidden = [

@@ -71,7 +71,8 @@ class AuthController extends Controller
                 'address' => $request->address,
                 'city' => $request->city,
                 'region' => $request->region,
-                'preferred_payment_method' => null
+                'preferred_payment_method' => null,
+                'role' => 'user'
             ]);
 
             if ($request->expectsJson()) {
