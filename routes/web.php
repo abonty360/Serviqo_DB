@@ -56,5 +56,21 @@ Route::get('/how-it-works', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+use App\Http\Controllers\AdminController;
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+            ->name('dashboard');
+
+        Route::get('/service-providers', [AdminController::class, 'providers'])
+            ->name('providers');
+
+        Route::get('/all_bookings', [AdminController::class, 'all_bookings'])
+            ->name('all_bookings');
+});
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
