@@ -42,7 +42,6 @@ Route::get('/services', function () {
     return view('Service');
 })->name('services');
 
-
 Route::get('/book', function () {
     return view('booking');
 })->name('book');
@@ -50,8 +49,21 @@ Route::get('/book', function () {
 Route::get('/how-it-works', function () {
     return view('how-it-works');
 })->name('how-it-works');
+
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+});
+
+Route::get('/admin/providers', function () {
+    return view('admin.service_providers');
+});
+
+Route::get('/admin/all_bookings', function () {
+    return view('admin.all_booking');
+});
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');

@@ -1,30 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BookingController;
 
-Route::get('/items', [UsersController::class, 'index']);
-Route::get('/items/{id}', [UsersController::class, 'show']);
-Route::post('/items', [UsersController::class, 'store']);
-Route::put('/items/{id}', [UsersController::class, 'update']);
-Route::patch('/items/{id}', [UsersController::class, 'patch']);
-Route::delete('/items/{id}', [UsersController::class, 'destroy']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-
-Route::post('/register', [AuthController::class,'register']);
-Route::post('/login', [AuthController::class,'login']);
-
-Route::middleware(['auth:api','prevent-back-history'])->group(function () {
+Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
 
     Route::get('/profile', function () {
         return auth('api')->user();
     });
 
     Route::get('/me', function () {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        if ($user) {
+            $user->load(['serviceOrders.items.offering.subService']);
+        }
+        return response()->json($user);
     });
+    Route::post('/book', [BookingController::class, 'store']);
+    Route::post('/book/{id}/complete', [BookingController::class, 'complete']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/logout', [AuthController::class,'logout']);
+});
+
+Route::middleware(['auth:api'])->prefix('admin')->group(function () {
+
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/providers', [AdminController::class, 'providers']);
+    Route::get('/all_bookings', [AdminController::class, 'all_bookings']);
 
 });

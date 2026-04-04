@@ -117,13 +117,18 @@
 
             if (!data.error) {
                 localStorage.setItem("token", data.token);
-                window.location.href = "/";
-            } else {
-                alert(data.message);
+                localStorage.setItem("user", JSON.stringify(data.customer));
+                const user = data.customer;
+
+                if (user.role === "admin") {
+                    window.location.href = "/admin/dashboard";
+                } else {
+                    window.location.href = "/";
+                }
             }
         });
     </script>
-        <script>
+    <script>
         function redirectIfLoggedIn() {
             const token = localStorage.getItem("token");
 
