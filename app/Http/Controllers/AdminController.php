@@ -13,7 +13,12 @@ class AdminController extends Controller
 
     public function providers()
     {
-        $providers = Customer::all();
+        $providers = collect([
+            [
+                'fname' => 'Add',
+                'lname' => 'providers'
+            ]
+        ]);
         return response()->json($providers);
     }
     public function all_bookings()

@@ -1,44 +1,53 @@
 @include('components.navbar')
+
 <h1>Service Providers</h1>
 
 <div id="providers">Loading...</div>
 
 <script>
-async function loadProviders() {
-    const token = localStorage.getItem("token");
+    async function loadProviders() {
+        const token = localStorage.getItem("token");
 
-    if (!token) {
-        window.location.href = "/login";
-        return;
-    }
-
-    try {
-        const res = await fetch("/api/admin/providers", {
-            headers: {
-                Authorization: "Bearer " + token
-            }
-        });
-
-        if (res.status === 401) {
-            localStorage.removeItem("token");
+        if (!token) {
             window.location.href = "/login";
             return;
         }
 
-        const providers = await res.json();
+        try {
+            const res = await fetch("/api/admin/providers", {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            });
 
-        let html = "";
+            if (res.status === 401) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+                return;
+            }
 
-        providers.forEach(p => {
-            html += `<p>${p.fname} ${p.lname}</p>`;
-        });
+            const providers = await res.json();
 
-        document.getElementById("providers").innerHTML = html;
+            let html = "";
 
-    } catch {
-        document.getElementById("providers").innerText = "Error loading providers";
+            providers.forEach(p => {
+                html += `<p>${p.fname} ${p.lname}</p>`;
+            });
+
+            document.getElementById("providers").innerHTML = html;
+
+        } catch {
+            document.getElementById("providers").innerText = "Error loading providers";
+        }
     }
-}
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            const token = localStorage.getItem("token");
 
-loadProviders();
+            if (!token) {
+                window.location.replace("/login");
+            }
+        }
+    });
+    loadProviders();
 </script>
