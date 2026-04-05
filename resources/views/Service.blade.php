@@ -239,6 +239,32 @@
             </div>
         </div>
     </footer>
+    <script>
+        function toggleAccordion(id) {
+            const accordion = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            
+            // Toggle current accordion
+            accordion.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            
+            // Optional: Close others
+            const allAccordions = document.querySelectorAll('[id$="-accordion"]');
+            const allIcons = document.querySelectorAll('[id$="-accordion-icon"]');
+            
+            allAccordions.forEach(acc => {
+                if (acc.id !== id) {
+                    acc.classList.add('hidden');
+                }
+            });
+            
+            allIcons.forEach(i => {
+                if (i.id !== id + '-icon') {
+                    i.classList.remove('rotate-180');
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
