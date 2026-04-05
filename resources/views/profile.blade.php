@@ -172,7 +172,7 @@
             }
             let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-            let icon = 'fa-tools';
+           let icon = 'fa-tools';
             let statusColor = 'bg-yellow-100 text-yellow-600';
 
             if (order.status === 'completed' || order.status === 'Order Confirmed') {
