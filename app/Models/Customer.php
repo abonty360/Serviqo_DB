@@ -39,9 +39,10 @@ class Customer extends Authenticatable implements JWTSubject
 
     public function serviceOrders()
     {
-        return $this->hasMany('App\Models\ServiceOrder', 'customer_id')->orderBy('created_at', 'desc')->orderBy('scheduled_datetime', 'desc');
+        return $this->hasMany(\App\Models\ServiceOrder::class, 'customer_id')->orderBy('created_at', 'desc')->orderBy('scheduled_datetime', 'desc');
     }
-      public function reviews()
+
+    public function reviews()
     {
         return $this->hasMany(\App\Models\RatingsReview::class, 'customer_id');
     }

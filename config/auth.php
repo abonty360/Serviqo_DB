@@ -14,9 +14,10 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
-    ],
+    'guard' => 'web',
+    'passwords' => 'customers',
+],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -35,17 +36,21 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'customers',
-        ],
+ 
 
-        'api' => [
-            'driver' => 'jwt',
-            'provider' => 'customers',
-        ],
+'guards' => [
+
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'customers',
     ],
+
+    'api' => [
+        'driver' => 'jwt',
+        'provider' => 'customers',
+    ],
+
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -117,4 +122,5 @@ return [
 
     'password_timeout' => 10800,
 
-];
+    ];
+    
