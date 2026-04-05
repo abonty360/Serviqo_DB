@@ -93,7 +93,7 @@ function renderNavbar() {
         
         container.innerHTML = `
             <a href="/admin/dashboard" class="hover:text-green-600">Dashboard</a>
-            <a href="/admin/providers" class="hover:text-green-600">Providers</a>
+            <a href="/admin/service_providers" class="hover:text-green-600">Providers</a>
             <a href="/admin/all_bookings" class="hover:text-green-600">Bookings</a>
 
             <a href="/profile" class="px-4 py-2 text-green-600 font-semibold hover:bg-green-50 rounded-lg transition">

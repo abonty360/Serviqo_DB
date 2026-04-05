@@ -58,7 +58,7 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 });
 
-Route::get('/admin/providers', function () {
+Route::get('/admin/service_providers', function () {
     return view('admin.service_providers');
 });
 

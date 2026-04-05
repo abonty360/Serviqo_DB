@@ -13,7 +13,7 @@ class AdminController extends Controller
 
     public function providers()
     {
-       $providers = \App\Models\ServiceProvider::all();
+       $providers = \App\Models\ServiceProvider::with('serviceArea')->get();
         return response()->json($providers);
     }
     public function all_bookings()
