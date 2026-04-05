@@ -17,7 +17,7 @@ Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
     Route::get('/me', function () {
         $user = auth('api')->user();
         if ($user) {
-            $user->load(['serviceOrders.items.offering.subService']);
+            $user->load(['serviceOrders.items.offering.subService', 'reviews']);
         }
         return response()->json($user);
     });
@@ -32,6 +32,13 @@ Route::middleware(['auth:api'])->prefix('admin')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/providers', [AdminController::class, 'providers']);
+    Route::post('/providers', [AdminController::class, 'store_provider']);
+    Route::get('/service-areas', [AdminController::class, 'service_areas']);
+    Route::get('/sub-services', [AdminController::class, 'sub_services']);
     Route::get('/all_bookings', [AdminController::class, 'all_bookings']);
+    Route::patch('/bookings/{id}/status', [AdminController::class, 'update_status']);
+    Route::patch('/bookings/{id}/payment-status', [AdminController::class, 'update_payment_status']);
+    Route::patch('/bookings/{id}/assign', [AdminController::class, 'assign_provider']);
 
 });
+

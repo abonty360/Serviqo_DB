@@ -52,20 +52,23 @@ class BookingController extends Controller
 
             $order = new ServiceOrder();
             $order->customer_id = $customerId;
-            $order->status = 'Order Confirmed';
+            $order->status = 'Pending';
             $order->payment_status = 'unpaid';
             $order->scheduled_datetime = $scheduledDatetime;
             $order->save();
 
             $subService = SubService::where('service_name', 'like', "%{$request->service}%")->first();
             $offeringId = null; 
-            $itemPrice = 0.00;
+            $itemPrice = $request->amount ?? 0.00;
 
             if ($subService) {
                 $offering = ServiceProviderOffering::where('sub_service_id', $subService->id)->first();
                 if ($offering) {
                     $offeringId = $offering->id;
-                    $itemPrice = $offering->price_charged;
+                    // Use database price if frontend didn't send one, otherwise trust frontend for now
+                    if (!$itemPrice) {
+                        $itemPrice = $offering->price_charged;
+                    }
                 }
             }
             
@@ -99,7 +102,7 @@ class BookingController extends Controller
                     'service_provider_id' => $provider->id,
                     'sub_service_id' => $sub->id,
                 ], [
-                    'price_charged' => 50.00
+                    'price_charged' => $itemPrice > 0 ? $itemPrice : 500.00
                 ]);
                 
                 $offeringId = $offering->id;
@@ -121,7 +124,7 @@ class BookingController extends Controller
                 $payment = new Payment();
                 $payment->service_order_id = $order->id;
                 $payment->payment_method = $request->payment_method;
-                $payment->paid_amount = 0.00;
+                $payment->payable_amount = $itemPrice;
                 $payment->save();
             }
 
@@ -136,7 +139,8 @@ class BookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Order saved successfully',
-                'booking_id' => $order->id
+                'booking_id' => $order->id,
+                'amount' => $order->total_amount
             ]);
             
         } catch (\Illuminate\Validation\ValidationException $e) {

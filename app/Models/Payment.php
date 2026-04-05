@@ -9,7 +9,7 @@ class Payment extends Model
     protected $fillable = [
         'service_order_id', 
         'payment_method', 
-        'paid_amount', 
+        'payable_amount', 
         'payment_datetime', 
         'transaction_reference'
     ];

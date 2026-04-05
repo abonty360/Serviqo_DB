@@ -33,46 +33,49 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Cleaning -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Cleaning.jpg') }}" alt="Cleaning" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Cleaning Services</h3>
                         <p class="text-gray-600 mb-6">Professional home and office cleaning including deep cleaning, kitchen cleaning, and bathroom sanitization.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$29 - $199</span>
-                           <a href="{{ route('book', ['service' => 'cleaning']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <span class="text-green-600 font-bold">৳500 - ৳2000</span>
+                            <a href="{{ route('book', ['service' => 'cleaning']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Appliance Repair -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Reapir.jpg') }}" alt="Appliance Repair" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Appliance Repair</h3>
                         <p class="text-gray-600 mb-6">Expert repair for AC, refrigerator, washing machine, microwave, and other essential home appliances.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$49 - $250</span>
+                            <span class="text-green-600 font-bold">৳1000 - ৳2500</span>
                             <a href="{{ route('book', ['service' => 'repair']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Maintenance -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Plumbing.jpg') }}" alt="Maintenance" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Maintenance</h3>
                         <p class="text-gray-600 mb-6">Reliable plumbing, electrical work, carpentry, and general home maintenance services by certified professionals.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$35 - $150</span>
+                            <span class="text-green-600 font-bold">৳500 - ৳800</span>
                             <a href="{{ route('book', ['service' => 'maintenance']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Beauty -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
@@ -82,7 +85,7 @@
                         <h3 class="text-xl font-bold mb-2">Beauty & Makeover</h3>
                         <p class="text-gray-600 mb-6">Get salon-quality beauty services, haircuts, facials, and massages in the comfort of your own home.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$15 - $120</span>
+                            <span class="text-green-600 font-bold">৳800 - ৳5000</span>
                             <a href="{{ route('book', ['service' => 'beauty']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
@@ -90,57 +93,59 @@
 
                 <!-- Pest Control -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Pest.jpg') }}" alt="Pest Control" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Pest Control</h3>
                         <p class="text-gray-600 mb-6">Effective and safe pest management for termites, cockroaches, rodents, and other unwanted visitors.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$60 - $300</span>
+                            <span class="text-green-600 font-bold">৳2500 - ৳5000</span>
                             <a href="{{ route('book', ['service' => 'pest']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Painting -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Painting.jpg') }}" alt="Painting" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Painting</h3>
                         <p class="text-gray-600 mb-6">Transform your space with our professional interior and exterior painting services. Free color consultation included.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$199 - $2000+</span>
+                            <span class="text-green-600 font-bold">৳5000 - ৳50000+</span>
                             <a href="{{ route('book', ['service' => 'painting']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Car Care -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Car care.jpg') }}" alt="Car Care" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Car Care Services</h3>
                         <p class="text-gray-600 mb-6">Professional car wash, detailing, interior cleaning, and minor repairs right at your doorstep.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$19 - $149</span>
+                            <span class="text-green-600 font-bold">৳500 - ৳2500</span>
                             <a href="{{ route('book', ['service' => 'car']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Trip & Travels -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Trip.jpg') }}" alt="Trip & Travels" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Trip & Travels</h3>
                         <p class="text-gray-600 mb-6">Hassle-free travel planning, ticket booking, and local tour guides for your next adventure.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$99 - $999+</span>
+                            <span class="text-green-600 font-bold">৳2000 - ৳15000+</span>
                             <a href="{{ route('book', ['service' => 'travel']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
@@ -148,14 +153,14 @@
 
                 <!-- Health & Care -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Health.jpg') }}" alt="Health & Care" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Health & Care</h3>
                         <p class="text-gray-600 mb-6">Professional nursing care, physiotherapy, and elderly assistance services at home.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$25 - $200/day</span>
+                            <span class="text-green-600 font-bold">৳1000 - ৳3000/day</span>
                             <a href="{{ route('book', ['service' => 'health']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
@@ -163,14 +168,14 @@
 
                 <!-- House Shifting -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Shifting.jpg') }}" alt="House Shifting" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">House Shifting</h3>
                         <p class="text-gray-600 mb-6">Reliable packing and moving services for smooth relocation. We handle your belongings with care.</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-green-600 font-bold">$150 - $1500+</span>
+                            <span class="text-green-600 font-bold">৳5000 - ৳25000+</span>
                             <a href="{{ route('book', ['service' => 'shifting']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
@@ -234,6 +239,32 @@
             </div>
         </div>
     </footer>
+    <script>
+        function toggleAccordion(id) {
+            const accordion = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            
+            // Toggle current accordion
+            accordion.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            
+            // Optional: Close others
+            const allAccordions = document.querySelectorAll('[id$="-accordion"]');
+            const allIcons = document.querySelectorAll('[id$="-accordion-icon"]');
+            
+            allAccordions.forEach(acc => {
+                if (acc.id !== id) {
+                    acc.classList.add('hidden');
+                }
+            });
+            
+            allIcons.forEach(i => {
+                if (i.id !== id + '-icon') {
+                    i.classList.remove('rotate-180');
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

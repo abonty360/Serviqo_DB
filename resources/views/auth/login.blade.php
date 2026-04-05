@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<script>
+    const token = localStorage.getItem("token");
+    if (token) {
+        window.location.replace("/"); 
+    }
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,42 +108,81 @@
         document.querySelector("form").addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            const formData = new FormData(this);
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
 
-            const response = await fetch("/login", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                },
-                body: formData
-            });
+            // Show/hide error message
+            let errDiv = document.getElementById('loginError');
+            if (!errDiv) {
+                errDiv = document.createElement('div');
+                errDiv.id = 'loginError';
+                errDiv.className = 'mb-4 p-3 bg-red-100 text-red-700 rounded-xl text-sm';
+                errDiv.style.display = 'none';
+                this.insertBefore(errDiv, this.firstChild);
+            }
+            errDiv.style.display = 'none';
 
-            const data = await response.json();
+            try {
+                const formData = new FormData(this);
 
-            if (!data.error) {
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.customer));
-                const user = data.customer;
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                    },
+                    body: formData
+                });
 
-                if (user.role === "admin") {
-                    window.location.href = "/admin/dashboard";
-                } else {
-                    window.location.href = "/";
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (_) {
+                    errDiv.textContent = 'Unexpected server error. Please try again.';
+                    errDiv.style.display = 'block';
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    return;
                 }
+
+                if (!data.error) {
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("user", JSON.stringify(data.customer));
+                    const user = data.customer;
+
+                    if (user && user.role === "admin") {
+                        window.location.href = "/admin/dashboard";
+                    } else {
+                        window.location.href = "/";
+                    }
+                } else {
+                    errDiv.textContent = data.message || 'Invalid email or password.';
+                    errDiv.style.display = 'block';
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                errDiv.textContent = 'Network error. Please check your connection and try again.';
+                errDiv.style.display = 'block';
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         });
     </script>
     <script>
-        function redirectIfLoggedIn() {
-            const token = localStorage.getItem("token");
-
-            if (token) {
-                window.location.replace("/");
+        // Only redirect away from login if user navigates BACK via browser cache
+        // (e.g. pressing the back button after logging in).
+        // Do NOT redirect on normal page load so the user can actually log in.
+        window.addEventListener("pageshow", function (e) {
+            if (e.persisted) {
+                const token = localStorage.getItem("token");
+                if (token) {
+                    window.location.replace("/");
+                }
             }
-        }
-
-        document.addEventListener("DOMContentLoaded", redirectIfLoggedIn);
-        window.addEventListener("pageshow", redirectIfLoggedIn);
+        });
     </script>
 </body>
 

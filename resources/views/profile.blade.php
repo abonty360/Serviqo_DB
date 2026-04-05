@@ -54,6 +54,7 @@
 
             // Update stats
             document.getElementById("bookingsCount").textContent = user.service_orders ? user.service_orders.length : 0;
+            document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
 
             // Store user data globally
             window.currentUserData = user;
@@ -71,7 +72,7 @@
             if (!activityContainer || !user || !user.service_orders) return;
 
             if (user.service_orders.length === 0) {
-                activityContainer.innerHTML = '<p class="text-gray-500 text-sm">No recent orders found.</p>';
+                activityContainer.innerHTML = '<p class="text-gray-500 text-sm">You haven\'t placed any orders yet.</p>';
                 if (viewAllBtn) viewAllBtn.classList.add('hidden');
             } else {
                 activityContainer.innerHTML = '';
@@ -99,8 +100,16 @@
                     
                     let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-                    let statusColor = order.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
-                    let icon = order.status === 'completed' ? 'fa-check-circle' : 'fa-clock';
+                    let statusColor = 'bg-yellow-100 text-yellow-600';
+                    let icon = 'fa-clock';
+                    
+                    if (order.status === 'completed' || order.status === 'Order Confirmed') {
+                        statusColor = 'bg-green-100 text-green-600';
+                        icon = 'fa-check-circle';
+                    } else if (order.status === 'cancelled') {
+                        statusColor = 'bg-red-100 text-red-600';
+                        icon = 'fa-times-circle';
+                    }
                     let dateObj = new Date(order.scheduled_datetime);
                     let dateText = isNaN(dateObj) ? order.scheduled_datetime : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
 
@@ -114,7 +123,7 @@
                                     <h4 class="font-bold text-gray-900 capitalize group-hover:text-green-600 transition">${displayServiceName}</h4>
                                     <span class="text-xs font-bold px-2 py-1 ${statusColor} rounded-lg capitalize">${order.status}</span>
                                 </div>
-                                <p class="text-sm text-gray-500 mt-1">Scheduled for ${dateText} • Total: $${order.total_amount}</p>
+                                <p class="text-sm text-gray-500 mt-1">Scheduled for ${dateText} • Total: ৳${order.total_amount}</p>
                             </div>
                             <div class="self-center opacity-0 group-hover:opacity-100 transition">
                                 <i class="fas fa-chevron-right text-gray-300"></i>
@@ -128,7 +137,7 @@
                         viewAllBtn.classList.add('hidden');
                     } else {
                         viewAllBtn.classList.remove('hidden');
-                        viewAllBtn.textContent = window.activityLimit === null ? 'View Less' : 'View All Activities';
+                        viewAllBtn.textContent = window.activityLimit === null ? 'Show Less History' : 'View Full Order History';
                     }
                 }
             }
@@ -163,8 +172,16 @@
             }
             let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-            let icon = order.status === 'completed' ? 'fa-check-circle' : 'fa-tools';
-            let statusColor = order.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
+           let icon = 'fa-tools';
+            let statusColor = 'bg-yellow-100 text-yellow-600';
+
+            if (order.status === 'completed' || order.status === 'Order Confirmed') {
+                icon = 'fa-check-circle';
+                statusColor = 'bg-green-100 text-green-600';
+            } else if (order.status === 'cancelled') {
+                icon = 'fa-times-circle';
+                statusColor = 'bg-red-100 text-red-600';
+            }
             
             let dateObj = new Date(order.scheduled_datetime);
             let dateText = isNaN(dateObj) ? order.scheduled_datetime : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
@@ -176,7 +193,7 @@
             document.getElementById('detailsDate').textContent = dateText;
             document.getElementById('detailsOrderId').textContent = "#" + String(order.id).padStart(5, '0');
             document.getElementById('detailsPayment').textContent = order.payment_status;
-            document.getElementById('detailsTotal').textContent = "$" + order.total_amount;
+            document.getElementById('detailsTotal').textContent = "৳" + order.total_amount;
 
             document.getElementById('bookingDetailsModal').classList.remove('hidden');
         }
@@ -335,10 +352,10 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="text-center p-3 bg-green-50 rounded-2xl">
                                 <p id="bookingsCount" class="text-2xl font-bold text-green-600">0</p>
-                                <p class="text-xs text-gray-500 font-medium">Orders Confirmed</p>
+                                <p class="text-xs text-gray-500 font-medium">Orders</p>
                             </div>
                             <div class="text-center p-3 bg-green-50 rounded-2xl">
-                                <p class="text-2xl font-bold text-green-600">5</p>
+                                <p id="reviewsCount" class="text-2xl font-bold text-green-600">0</p>
                                 <p class="text-xs text-gray-500 font-medium">Reviews</p>
                             </div>
                         </div>
@@ -347,7 +364,7 @@
 
                 <div class="md:col-span-2 space-y-6">
                     <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-xl mb-6">Recent Activity</h3>
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">Order History</h3>
 
                         <div id="recent-activity-container" class="space-y-6">
                             <div class="flex justify-center p-4">
@@ -357,7 +374,7 @@
 
                         <button id="viewAllBtn" onclick="toggleActivities()"
                             class="w-full mt-6 py-3 text-green-600 font-bold hover:bg-green-50 rounded-xl transition hidden">
-                            View All Activities
+                            View Full Order History
                         </button>
                     </div>
 

@@ -30,6 +30,11 @@ class ServiceOrder extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+       public function payments()
+    {
+        return $this->hasMany(Payment::class, 'service_order_id');
+    }
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s'); // Avoid UTC (Z) append so the frontend doesn't shift the timezone automatically!

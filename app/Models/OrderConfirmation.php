@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderConfirmation extends Model
 {
-    public $timestamps = false; // No created_at and updated_at in the table schema
+    public $timestamps = false; 
 
     protected $fillable = [
         'service_order_id', 
