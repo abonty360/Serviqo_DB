@@ -52,7 +52,7 @@ class BookingController extends Controller
 
             $order = new ServiceOrder();
             $order->customer_id = $customerId;
-            $order->status = 'Order Confirmed';
+            $order->status = 'pending';
             $order->payment_status = 'unpaid';
             $order->scheduled_datetime = $scheduledDatetime;
             $order->save();
@@ -128,7 +128,7 @@ class BookingController extends Controller
             
             $confirmation = new OrderConfirmation();
             $confirmation->service_order_id = $order->id;
-            $confirmation->confirmation_status = 'confirmed';
+            $confirmation->confirmation_status = 'pending';
             $confirmation->final_amount = $itemPrice;
             $confirmation->confirmed_at = now();
             $confirmation->save();

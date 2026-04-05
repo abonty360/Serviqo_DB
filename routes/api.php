@@ -32,6 +32,9 @@ Route::middleware(['auth:api'])->prefix('admin')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/providers', [AdminController::class, 'providers']);
+    Route::post('/providers', [AdminController::class, 'store_provider']);
+    Route::get('/service-areas', [AdminController::class, 'service_areas']);
+    Route::get('/sub-services', [AdminController::class, 'sub_services']);
     Route::get('/all_bookings', [AdminController::class, 'all_bookings']);
        Route::patch('/bookings/{id}/status', [AdminController::class, 'update_status']);
     Route::patch('/bookings/{id}/payment-status', [AdminController::class, 'update_payment_status']);

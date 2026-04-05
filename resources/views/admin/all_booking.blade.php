@@ -72,11 +72,11 @@
                 </div>
             </div>
 
-            <!-- Completed & Others Section -->
+            <!-- Booking History Section -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-check-circle text-green-500"></i> Booking History
+                        <i class="fas fa-history text-blue-500"></i> Booking History
                     </h2>
                 </div>
 
@@ -95,38 +95,8 @@
                         </thead>
                         <tbody id="historyTableBody" class="text-sm divide-y divide-gray-100">
                             <tr>
-                                 <td colspan="9" class="py-8 text-center text-gray-400">Loading bookings...</td>
+                                 <td colspan="7" class="py-8 text-center text-gray-400">Loading history...</td>
                                 </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Completed & Others Section -->
-              <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-check-circle text-green-500"></i> Booking History
-                    </h2>
-                     </div>
-
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-600 text-xs font-bold uppercase tracking-wider">
-                                 <th class="px-4 py-3">ID</th>
-                                <th class="px-4 py-3">Customer</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3">Scheduled Date</th>
-                                <th class="px-4 py-3">Total</th>
-                                <th class="px-4 py-3">Payment</th>
-                                <th class="px-4 py-3">Provider</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody" class="text-sm divide-y divide-gray-100">
-                            <tr>
-                                <td colspan="7" class="py-8 text-center text-gray-400">Loading history...</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -136,11 +106,13 @@
 
     <script>
         const token = localStorage.getItem("token");
+        let providersList = [];
 
         if (!token) {
             window.location.href = "/login";
         }
-         async function fetchProviders() {
+
+        async function fetchProviders() {
             try {
                 const res = await fetch("/api/admin/providers", {
                     headers: { Authorization: "Bearer " + token }
@@ -222,38 +194,42 @@
             }
         }
 
-            async function loadBookings() {
+        async function loadBookings() {
             const pendingBody = document.getElementById("pendingTableBody");
             const historyBody = document.getElementById("historyTableBody");
 
-            
             try {
                 const res = await fetch("/api/admin/all_bookings", {
                    headers: { Authorization: "Bearer " + token }
                 });
 
-                      if (res.status === 401) {
+                if (res.status === 401) {
                     localStorage.removeItem("token");
                     window.location.href = "/login";
                     return;
                 }
 
-            const bookings = await res.json();
+                if (!res.ok) throw new Error('Failed to fetch bookings');
+
+                const bookings = await res.json();
 
                 const pending = bookings.filter(b => b.status === 'Pending' || b.status === 'pending');
                 const history = bookings.filter(b => b.status !== 'Pending' && b.status !== 'pending');
+                
                 pendingBody.innerHTML = pending.length ? renderPending(pending) : `<tr><td colspan="9" class="py-8 text-center text-gray-400">No pending bookings.</td></tr>`;
                 historyBody.innerHTML = history.length ? renderHistory(history) : `<tr><td colspan="7" class="py-8 text-center text-gray-400">No booking history.</td></tr>`;
-               pendingBody.innerHTML = historyBody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-red-400">Error loading data.</td></tr>`;
+            } catch (err) {
+                console.error("Error loading bookings:", err);
+                pendingBody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-red-400">Error loading data: ${err.message}</td></tr>`;
+                historyBody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-red-400">Error loading data.</td></tr>`;
             }
         }
-              function renderPending(bookings) {
+
+        function renderPending(bookings) {
             return bookings.map(b => {
                 const customerName = b.customer ? `${b.customer.fname} ${b.customer.lname}` : 'Guest';
                 const location = b.customer ? `${b.customer.city}, ${b.customer.address || ''}` : 'N/A';
                 
-                // Determine if it's already assigned to someone other than a generic placeholder if needed
-                // For now, checking if a provider email matches 'provider@example.com' could be one way
                 const provider = b.items && b.items[0] && b.items[0].offering ? b.items[0].offering.provider : null;
                 const isAssigned = provider && provider.email === 'provider@example.com'; 
 
@@ -269,7 +245,7 @@
                     paymentStatusClass = 'bg-green-100 text-green-700';
                 }
           
- return `
+                return `
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-4 py-4 font-medium text-gray-900">#${b.id}</td>
                         <td class="px-4 py-4">
@@ -368,6 +344,7 @@
             }).join('');
         }
         document.addEventListener("DOMContentLoaded", () => {
+            fetchProviders();
             loadBookings();
         });
     </script>
