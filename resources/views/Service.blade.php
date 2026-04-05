@@ -33,7 +33,7 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Cleaning -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Cleaning.jpg') }}" alt="Cleaning" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -41,13 +41,14 @@
                         <p class="text-gray-600 mb-6">Professional home and office cleaning including deep cleaning, kitchen cleaning, and bathroom sanitization.</p>
                         <div class="flex items-center justify-between">
                             <span class="text-green-600 font-bold">$29 - $199</span>
-                           <a href="{{ route('book', ['service' => 'cleaning']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
+                            <a href="{{ route('book', ['service' => 'cleaning']) }}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Book Now</a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Appliance Repair -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Reapir.jpg') }}" alt="Appliance Repair" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -59,9 +60,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Maintenance -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Plumbing.jpg') }}" alt="Maintenance" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -73,6 +75,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Beauty -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
@@ -90,7 +93,7 @@
 
                 <!-- Pest Control -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Pest.jpg') }}" alt="Pest Control" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -102,12 +105,12 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Painting -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
                     <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Painting.jpg') }}" alt="Painting" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
-
                     <div class="p-8">
                         <h3 class="text-xl font-bold mb-2">Painting</h3>
                         <p class="text-gray-600 mb-6">Transform your space with our professional interior and exterior painting services. Free color consultation included.</p>
@@ -117,9 +120,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Car Care -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Car care.jpg') }}" alt="Car Care" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -131,9 +135,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Trip & Travels -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Trip.jpg') }}" alt="Trip & Travels" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -148,7 +153,7 @@
 
                 <!-- Health & Care -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Health.jpg') }}" alt="Health & Care" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
@@ -163,7 +168,7 @@
 
                 <!-- House Shifting -->
                 <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 group overflow-hidden">
-                        <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src="{{ asset('Images/Shifting.jpg') }}" alt="House Shifting" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-8">
