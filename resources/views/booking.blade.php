@@ -134,7 +134,7 @@
                             <!-- Payment Method -->
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-bold text-gray-700 mb-4">Select Payment Method</label>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <label class="relative flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-green-50 transition group peer-checked:border-green-500">
                                         <input type="radio" name="payment_method" value="cash" checked class="peer hidden">
                                         <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center peer-checked:border-green-500 peer-checked:bg-green-500 mr-3">
@@ -145,18 +145,6 @@
                                             <span class="text-xs text-gray-500">Pay when job is done</span>
                                         </div>
                                         <i class="fas fa-money-bill-wave ml-auto text-gray-400 group-hover:text-green-500"></i>
-                                    </label>
-
-                                    <label class="relative flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-green-50 transition group">
-                                        <input type="radio" name="payment_method" value="card" class="peer hidden">
-                                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center peer-checked:border-green-500 peer-checked:bg-green-500 mr-3">
-                                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-700">Credit / Debit Card</span>
-                                            <span class="text-xs text-gray-500">Secure online payment</span>
-                                        </div>
-                                        <i class="fas fa-credit-card ml-auto text-gray-400 group-hover:text-green-500"></i>
                                     </label>
 
                                     <label class="relative flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-green-50 transition group">

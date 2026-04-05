@@ -17,7 +17,7 @@ Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
     Route::get('/me', function () {
         $user = auth('api')->user();
         if ($user) {
-            $user->load(['serviceOrders.items.offering.subService']);
+            $user->load(['serviceOrders.items.offering.subService', 'reviews']);
         }
         return response()->json($user);
     });

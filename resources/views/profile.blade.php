@@ -54,7 +54,7 @@
 
             // Update stats
             document.getElementById("bookingsCount").textContent = user.service_orders ? user.service_orders.length : 0;
-
+               document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
             // Store user data globally
             window.currentUserData = user;
 
@@ -71,7 +71,7 @@
             if (!activityContainer || !user || !user.service_orders) return;
 
             if (user.service_orders.length === 0) {
-                activityContainer.innerHTML = '<p class="text-gray-500 text-sm">No recent orders found.</p>';
+                  activityContainer.innerHTML = '<p class="text-gray-500 text-sm">You haven\'t placed any orders yet.</p>';
                 if (viewAllBtn) viewAllBtn.classList.add('hidden');
             } else {
                 activityContainer.innerHTML = '';
@@ -128,7 +128,7 @@
                         viewAllBtn.classList.add('hidden');
                     } else {
                         viewAllBtn.classList.remove('hidden');
-                        viewAllBtn.textContent = window.activityLimit === null ? 'View Less' : 'View All Activities';
+                         viewAllBtn.textContent = window.activityLimit === null ? 'Show Less History' : 'View Full Order History';
                     }
                 }
             }
@@ -338,7 +338,7 @@
                                 <p class="text-xs text-gray-500 font-medium">Orders Confirmed</p>
                             </div>
                             <div class="text-center p-3 bg-green-50 rounded-2xl">
-                                <p class="text-2xl font-bold text-green-600">5</p>
+                                <p id="reviewsCount" class="text-2xl font-bold text-green-600">0</p>
                                 <p class="text-xs text-gray-500 font-medium">Reviews</p>
                             </div>
                         </div>
@@ -347,7 +347,7 @@
 
                 <div class="md:col-span-2 space-y-6">
                     <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                        <h3 class="font-bold text-gray-900 text-xl mb-6">Recent Activity</h3>
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">Order History</h3>
 
                         <div id="recent-activity-container" class="space-y-6">
                             <div class="flex justify-center p-4">
@@ -357,7 +357,7 @@
 
                         <button id="viewAllBtn" onclick="toggleActivities()"
                             class="w-full mt-6 py-3 text-green-600 font-bold hover:bg-green-50 rounded-xl transition hidden">
-                            View All Activities
+                            View Full Order History
                         </button>
                     </div>
 
