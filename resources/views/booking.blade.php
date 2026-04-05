@@ -124,16 +124,75 @@
                                 </div>
                             </div>
 
-                            <!-- Address -->
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Service Address</label>
+                            <!-- Division -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Division</label>
                                 <div class="relative">
-                                    <span class="absolute top-3 left-4 text-gray-400">
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 pointer-events-none">
                                         <i class="fas fa-map-marker-alt"></i>
                                     </span>
-                                    <textarea name="address" rows="3" required
+                                    <select name="city" id="divisionSelect" required
+                                        class="block w-full pl-11 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition appearance-none bg-white text-gray-700">
+                                        <option value="" disabled selected>Select Division</option>
+                                        <option value="Dhaka">Dhaka</option>
+                                        <option value="Chittagong">Chittagong</option>
+                                        <option value="Sylhet">Sylhet</option>
+                                        <option value="Barisal">Barisal</option>
+                                        <option value="Rangpur">Rangpur</option>
+                                        <option value="Rajshahi">Rajshahi</option>
+                                        <option value="Khulna">Khulna</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Region -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Region</label>
+                                <div class="relative dropdown-container" id="regionContainer">
+                                    <button type="button" id="regionButton"
+                                        class="w-full pl-11 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition bg-white text-gray-700 text-left flex items-center justify-between">
+                                        <span id="regionLabel">Select Region</span>
+                                        <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                                    </button>
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 pointer-events-none">
+                                        <i class="fas fa-globe"></i>
+                                    </span>
+                                    <div id="regionMenu"
+                                        class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                        <div id="regionOptionsList" class="p-1">
+                                            <div class="px-4 py-2 text-gray-400 text-sm">Please select a division first</div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="region" id="regionInput" required>
+                                </div>
+                            </div>
+
+                            <!-- Road No -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Road No.</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                                        <i class="fas fa-road"></i>
+                                    </span>
+                                    <input type="text" name="road_no" required
                                         class="block w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
-                                        placeholder="Enter your full address"></textarea>
+                                        placeholder="Road No.">
+                                </div>
+                            </div>
+
+                            <!-- House No -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">House No.</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                                        <i class="fas fa-home"></i>
+                                    </span>
+                                    <input type="text" name="house_no" required
+                                        class="block w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                                        placeholder="House No.">
                                 </div>
                             </div>
 
@@ -286,6 +345,73 @@
                 ]
             };
 
+            const regionData = {
+                'Dhaka': ['Mirpur', 'Dhanmondi', 'Uttara', 'Gulshan', 'Banani', 'Mohammadpur', 'Tejgaon', 'Motijheel', 'Paltan', 'Savar', 'Keraniganj', 'Dohar'],
+                'Chittagong': ["Cox's Bazar", 'Panchlaish', 'Halishahar', 'Pahartali', 'Chandgaon', 'Sitakunda', 'Rangunia', 'Sandwip', 'Mirsharai', 'Boalkhali'],
+                'Sylhet': ['Zindabazar', 'Amberkhana', 'Tilagor', 'Noyashahar', 'Kumarpara', 'Moglabazar', 'Gowainghat', 'Beanibazar', 'Balaganj', 'Fenchuganj'],
+                'Barisal': ['Sadatpur', 'Amtali', 'Agailjhara', 'Babuganj', 'Bakerganj', 'Banaripara', 'Gournadi', 'Hizla', 'Mehendiganj', 'Muladi', 'Wazirpur'],
+                'Rangpur': ['Modern More', 'Kaunia', 'Gangachara', 'Pirgachha', 'Badarganj', 'Mithapukur', 'Pirganj', 'Rangpur Sadar', 'Taraganj', 'Pirgachha'],
+                'Rajshahi': ['Motihar', 'Boalia', 'Paba', 'Durgapur', 'Bagha', 'Bagmara', 'Charghat', 'Godagari', 'Tanore', 'Puthia', 'Mohonpur'],
+                'Khulna': ['Boyra', 'Khalishpur', 'Sonadanga', 'Daulatpur', 'Dumuria', 'Dighalia', 'Batiaghata', 'Phultala', 'Rupsha', 'Terokhada', 'Paikgachha']
+            };
+
+            function setupDropdown(buttonId, menuId, labelId, inputId, optionClass, onSelect) {
+                const button = document.getElementById(buttonId);
+                const menu = document.getElementById(menuId);
+                const label = document.getElementById(labelId);
+                const input = document.getElementById(inputId);
+
+                if (!button || !menu) return;
+
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('[id$="Menu"]').forEach(m => {
+                        if (m.id !== menuId) m.classList.add('hidden');
+                    });
+                    menu.classList.toggle('hidden');
+                });
+
+                menu.addEventListener('click', (e) => {
+                    const option = e.target.closest('.' + optionClass);
+                    if (option) {
+                        const value = option.getAttribute('data-value');
+                        label.textContent = value;
+                        input.value = value;
+                        menu.classList.add('hidden');
+                        if (onSelect) onSelect(value);
+                    }
+                });
+            }
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('[id$="Menu"]').forEach(m => m.classList.add('hidden'));
+            });
+
+            const divisionSelect = document.getElementById('divisionSelect');
+            if (divisionSelect) {
+                divisionSelect.addEventListener('change', function () {
+                    const division = this.value;
+                    const regionOptionsList = document.getElementById('regionOptionsList');
+                    const regions = regionData[division] || [];
+
+                    document.getElementById('regionLabel').textContent = 'Select Region';
+                    document.getElementById('regionInput').value = '';
+
+                    if (regions.length > 0) {
+                        regionOptionsList.innerHTML = regions.map(region => `
+                            <div class="region-option px-4 py-2 hover:bg-green-50 rounded-lg cursor-pointer transition text-gray-700" data-value="${region}">
+                                ${region}
+                            </div>
+                        `).join('');
+                    } else {
+                        regionOptionsList.innerHTML =
+                            '<div class="px-4 py-2 text-gray-400 text-sm">No regions available</div>';
+                    }
+                });
+            }
+
+            setupDropdown('regionButton', 'regionMenu', 'regionLabel', 'regionInput', 'region-option');
+
             function updateSubServices(category, preselectedValue = null) {
                 const subs = subServicesData[category];
                 if (subs) {
@@ -339,13 +465,39 @@
 
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Show modal
-                confirmationModal.classList.remove('hidden');
+                
+                const formData = new FormData(bookingForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Construct the full address from parts
+                data.address = `House: ${data.house_no}, Road: ${data.road_no}, Region: ${data.region}, City: ${data.city}`;
+                
+                const token = localStorage.getItem("token");
+
+                fetch('/api/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        confirmationModal.classList.remove('hidden');
+                    } else {
+                        alert('Error: ' + (result.message || 'Validation failed'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during the booking process.');
+                });
             });
 
-            closeModal.addEventListener('click', function() {
+            closeModal.addEventListener('click', function () {
                 confirmationModal.classList.add('hidden');
-                // Optionally redirect home after confirmation
                 window.location.href = '/';
             });
         });

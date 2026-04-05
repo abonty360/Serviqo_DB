@@ -121,7 +121,7 @@ class BookingController extends Controller
                 $payment = new Payment();
                 $payment->service_order_id = $order->id;
                 $payment->payment_method = $request->payment_method;
-                $payment->paid_amount = 0.00;
+                $payment->payable_amount = 0.00;
                 $payment->save();
             }
 
