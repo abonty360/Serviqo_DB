@@ -99,8 +99,16 @@
                     
                     let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-                    let statusColor = order.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
-                    let icon = order.status === 'completed' ? 'fa-check-circle' : 'fa-clock';
+                             let statusColor = 'bg-yellow-100 text-yellow-600';
+                    let icon = 'fa-clock';
+                    
+                    if (order.status === 'completed' || order.status === 'Order Confirmed') {
+                        statusColor = 'bg-green-100 text-green-600';
+                        icon = 'fa-check-circle';
+                    } else if (order.status === 'cancelled') {
+                        statusColor = 'bg-red-100 text-red-600';
+                        icon = 'fa-times-circle';
+                    }
                     let dateObj = new Date(order.scheduled_datetime);
                     let dateText = isNaN(dateObj) ? order.scheduled_datetime : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
 
@@ -163,8 +171,16 @@
             }
             let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-            let icon = order.status === 'completed' ? 'fa-check-circle' : 'fa-tools';
-            let statusColor = order.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600';
+           let icon = 'fa-tools';
+            let statusColor = 'bg-yellow-100 text-yellow-600';
+
+            if (order.status === 'completed' || order.status === 'Order Confirmed') {
+                icon = 'fa-check-circle';
+                statusColor = 'bg-green-100 text-green-600';
+            } else if (order.status === 'cancelled') {
+                icon = 'fa-times-circle';
+                statusColor = 'bg-red-100 text-red-600';
+            }
             
             let dateObj = new Date(order.scheduled_datetime);
             let dateText = isNaN(dateObj) ? order.scheduled_datetime : dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
@@ -335,7 +351,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="text-center p-3 bg-green-50 rounded-2xl">
                                 <p id="bookingsCount" class="text-2xl font-bold text-green-600">0</p>
-                                <p class="text-xs text-gray-500 font-medium">Orders Confirmed</p>
+                                <p class="text-xs text-gray-500 font-medium">Orders</p>
                             </div>
                             <div class="text-center p-3 bg-green-50 rounded-2xl">
                                 <p id="reviewsCount" class="text-2xl font-bold text-green-600">0</p>
