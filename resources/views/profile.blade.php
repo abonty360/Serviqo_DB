@@ -54,7 +54,8 @@
 
             // Update stats
             document.getElementById("bookingsCount").textContent = user.service_orders ? user.service_orders.length : 0;
-               document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
+            document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
+
             // Store user data globally
             window.currentUserData = user;
 
@@ -71,7 +72,7 @@
             if (!activityContainer || !user || !user.service_orders) return;
 
             if (user.service_orders.length === 0) {
-                  activityContainer.innerHTML = '<p class="text-gray-500 text-sm">You haven\'t placed any orders yet.</p>';
+                activityContainer.innerHTML = '<p class="text-gray-500 text-sm">You haven\'t placed any orders yet.</p>';
                 if (viewAllBtn) viewAllBtn.classList.add('hidden');
             } else {
                 activityContainer.innerHTML = '';
@@ -99,7 +100,7 @@
                     
                     let displayServiceName = uiNames[serviceName.toLowerCase()] || serviceName;
 
-                             let statusColor = 'bg-yellow-100 text-yellow-600';
+                    let statusColor = 'bg-yellow-100 text-yellow-600';
                     let icon = 'fa-clock';
                     
                     if (order.status === 'completed' || order.status === 'Order Confirmed') {
@@ -122,7 +123,7 @@
                                     <h4 class="font-bold text-gray-900 capitalize group-hover:text-green-600 transition">${displayServiceName}</h4>
                                     <span class="text-xs font-bold px-2 py-1 ${statusColor} rounded-lg capitalize">${order.status}</span>
                                 </div>
-                                <p class="text-sm text-gray-500 mt-1">Scheduled for ${dateText} • Total: $${order.total_amount}</p>
+                                <p class="text-sm text-gray-500 mt-1">Scheduled for ${dateText} • Total: ৳${order.total_amount}</p>
                             </div>
                             <div class="self-center opacity-0 group-hover:opacity-100 transition">
                                 <i class="fas fa-chevron-right text-gray-300"></i>
@@ -136,7 +137,7 @@
                         viewAllBtn.classList.add('hidden');
                     } else {
                         viewAllBtn.classList.remove('hidden');
-                         viewAllBtn.textContent = window.activityLimit === null ? 'Show Less History' : 'View Full Order History';
+                        viewAllBtn.textContent = window.activityLimit === null ? 'Show Less History' : 'View Full Order History';
                     }
                 }
             }
@@ -192,7 +193,7 @@
             document.getElementById('detailsDate').textContent = dateText;
             document.getElementById('detailsOrderId').textContent = "#" + String(order.id).padStart(5, '0');
             document.getElementById('detailsPayment').textContent = order.payment_status;
-            document.getElementById('detailsTotal').textContent = "$" + order.total_amount;
+            document.getElementById('detailsTotal').textContent = "৳" + order.total_amount;
 
             document.getElementById('bookingDetailsModal').classList.remove('hidden');
         }

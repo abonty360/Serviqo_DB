@@ -52,7 +52,7 @@ class BookingController extends Controller
 
             $order = new ServiceOrder();
             $order->customer_id = $customerId;
-            $order->status = 'pending';
+            $order->status = 'Pending';
             $order->payment_status = 'unpaid';
             $order->scheduled_datetime = $scheduledDatetime;
             $order->save();
@@ -121,7 +121,7 @@ class BookingController extends Controller
                 $payment = new Payment();
                 $payment->service_order_id = $order->id;
                 $payment->payment_method = $request->payment_method;
-                $payment->payable_amount = 0.00;
+                $payment->payable_amount = $itemPrice;
                 $payment->save();
             }
 
