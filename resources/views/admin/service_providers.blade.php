@@ -34,7 +34,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Service Providers</h1>
                     <p class="text-gray-500 mt-1">Manage and monitor all registered service providers</p>
                 </div>
-                 <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4">
                     <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center shadow-md">
                         <i class="fas fa-plus mr-2"></i> Add Provider
                     </button>
@@ -67,102 +67,110 @@
                     </table>
                 </div>
             </div>
-             <!-- Add Provider Modal -->
+        </div>
+    </div>
+
+    <!-- Add Provider Modal -->
     <div id="addProviderModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div class="bg-gray-900 px-8 py-6 text-white flex justify-between items-center">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-300">
+            <!-- Modal Header -->
+            <div class="bg-blue-600 px-8 py-6 text-white flex justify-between items-center flex-shrink-0">
                 <h2 class="text-xl font-bold">Add New Provider</h2>
-                <button onclick="closeAddModal()" class="text-gray-400 hover:text-white transition-colors">
+                <button onclick="closeAddModal()" class="text-white/80 hover:text-white transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <form id="addProviderForm" class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                        <input type="text" name="full_name" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                        <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                        <input type="text" name="phone" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">NID Number</label>
-                        <input type="text" name="nid" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">City / Division</label>
-                        <div class="relative" id="cityContainer">
-                            <button type="button" id="cityButton"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 text-left flex items-center justify-between">
-                                <span id="cityLabel">Select Division</span>
-                                <i class="fas fa-chevron-down text-xs text-gray-400"></i>
-                            </button>
-                            <div id="cityMenu"
-                                class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                                <div class="p-1">
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Dhaka">Dhaka</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Chittagong">Chittagong</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Sylhet">Sylhet</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Barisal">Barisal</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Rangpur">Rangpur</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Rajshahi">Rajshahi</div>
-                                    <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Khulna">Khulna</div>
+            
+            <!-- Modal Body (Scrollable) -->
+            <div class="overflow-y-auto flex-grow p-8">
+                <form id="addProviderForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                            <input type="text" name="full_name" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                            <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                            <input type="text" name="phone" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">NID Number</label>
+                            <input type="text" name="nid" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">City / Division</label>
+                            <div class="relative" id="cityContainer">
+                                <button type="button" id="cityButton"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 text-left flex items-center justify-between">
+                                    <span id="cityLabel">Select Division</span>
+                                    <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                                </button>
+                                <div id="cityMenu"
+                                    class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                    <div class="p-1">
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Dhaka">Dhaka</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Chittagong">Chittagong</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Sylhet">Sylhet</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Barisal">Barisal</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Rangpur">Rangpur</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Rajshahi">Rajshahi</div>
+                                        <div class="city-option px-4 py-2 hover:bg-blue-50 rounded-lg cursor-pointer transition text-gray-700 text-sm" data-value="Khulna">Khulna</div>
+                                    </div>
                                 </div>
+                                <input type="hidden" name="city" id="cityInput" required>
                             </div>
-                            <input type="hidden" name="city" id="cityInput" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Service Area</label>
+                            <div class="relative" id="serviceAreaContainer">
+                                <button type="button" id="serviceAreaButton"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 text-left flex items-center justify-between">
+                                    <span id="serviceAreaLabel">Select Service Area</span>
+                                    <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                                </button>
+                                <div id="serviceAreaMenu"
+                                    class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                    <div id="serviceAreaOptionsList" class="p-1">
+                                        <div class="px-4 py-2 text-gray-400 text-sm">Loading...</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="service_area_id" id="serviceAreaInput" required>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Full Address</label>
+                            <input type="text" name="address" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Initial Rating</label>
+                            <input type="number" step="0.1" min="0" max="5" name="rating" value="0.0" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Service Area</label>
-                        <div class="relative" id="serviceAreaContainer">
-                            <button type="button" id="serviceAreaButton"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 text-left flex items-center justify-between">
-                                <span id="serviceAreaLabel">Select Service Area</span>
-                                <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+
+                    <!-- Service Offerings Section -->
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Service Offerings</h3>
+                            <button type="button" onclick="addOfferingRow()" class="text-blue-600 hover:text-blue-700 text-sm font-bold flex items-center">
+                                <i class="fas fa-plus-circle mr-1"></i> Add Service
                             </button>
-                            <div id="serviceAreaMenu"
-                                class="hidden absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                                <div id="serviceAreaOptionsList" class="p-1">
-                                    <div class="px-4 py-2 text-gray-400 text-sm">Loading...</div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="service_area_id" id="serviceAreaInput" required>
+                        </div>
+                        <div id="offeringsContainer" class="space-y-4">
+                            <!-- Dynamic Rows Will Appear Here -->
                         </div>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Full Address</label>
-                        <input type="text" name="address" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Initial Rating</label>
-                        <input type="number" step="0.1" min="0" max="5" name="rating" value="0.0" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                </div>
+                </form>
+            </div>
 
-                <!-- Service Offerings Section -->
-                <div class="border-t border-gray-100 pt-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-900">Service Offerings</h3>
-                        <button type="button" onclick="addOfferingRow()" class="text-blue-600 hover:text-blue-700 text-sm font-bold flex items-center">
-                            <i class="fas fa-plus-circle mr-1"></i> Add Service
-                        </button>
-                    </div>
-                    <div id="offeringsContainer" class="space-y-4">
-                        <!-- Dynamic Rows Will Appear Here -->
-                    </div>
-                </div>
-
-                <div class="flex justify-end pt-4 gap-4">
-                    <button type="button" onclick="closeAddModal()" class="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all">Cancel</button>
-                    <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Save Provider</button>
-                </div>
-            </form>
+            <!-- Modal Footer (Sticky) -->
+            <div class="px-8 py-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-4 flex-shrink-0">
+                <button type="button" onclick="closeAddModal()" class="px-8 py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold rounded-xl transition-all">Cancel</button>
+                <button type="submit" form="addProviderForm" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Save Provider</button>
+            </div>
         </div>
     </div>
 
@@ -172,7 +180,8 @@
         if (!token) {
             window.location.href = "/login";
         }
-         const regionData = {
+
+        const regionData = {
             'Dhaka': ['Mirpur', 'Dhanmondi', 'Uttara', 'Gulshan', 'Banani', 'Mohammadpur', 'Tejgaon', 'Motijheel', 'Paltan', 'Savar', 'Keraniganj', 'Dohar'],
             'Chittagong': ["Cox's Bazar", 'Panchlaish', 'Halishahar', 'Pahartali', 'Chandgaon', 'Sitakunda', 'Rangunia', 'Sandwip', 'Mirsharai', 'Boalkhali'],
             'Sylhet': ['Zindabazar', 'Amberkhana', 'Tilagor', 'Noyashahar', 'Kumarpara', 'Moglabazar', 'Gowainghat', 'Beanibazar', 'Balaganj', 'Fenchuganj'],
@@ -249,7 +258,6 @@
                 });
                 optionsHtml += `</optgroup>`;
             }
-        });
 
             div.innerHTML = `
                 <div class="flex-1">
@@ -371,16 +379,24 @@
                         "Accept": "application/json"
                     }
                 });
-             if (res.status === 401) {
+
+                if (res.status === 401) {
                     localStorage.removeItem("token");
                     window.location.href = "/login";
                     return;
                 }
+ window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                if (!localStorage.getItem("token")) {
+                    window.location.replace("/login");
+                }
+            }
+        });
 
-             const providers = await res.json();
-            const list = document.getElementById("providersList");
+                const providers = await res.json();
+                const list = document.getElementById("providersList");
 
-           if (!providers || providers.length === 0) {
+                if (!providers || providers.length === 0) {
                     list.innerHTML = `
                         <tr>
                             <td colspan="4" class="px-8 py-12 text-center text-gray-500 italic">
@@ -391,7 +407,7 @@
                     return;
                 }
 
-           let html = "";
+                let html = "";
                 providers.forEach(p => {
                     html += `
                         <tr class="hover:bg-gray-50/50 transition-colors">
@@ -423,10 +439,9 @@
                     `;
                 });
 
-    
-           list.innerHTML = html;
+                list.innerHTML = html;
 
-           } catch (err) {
+            } catch (err) {
                 console.error("Error:", err);
                 document.getElementById("providersList").innerHTML = `
                     <tr>
