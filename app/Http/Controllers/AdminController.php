@@ -11,6 +11,7 @@ use App\Models\ServiceProviderOffering;
 use App\Models\ServiceArea;
 use App\Models\ServiceOrder;
 use Illuminate\Support\Facades\DB;
+
 class AdminController extends Controller
 {
     public function dashboard()
@@ -20,10 +21,11 @@ class AdminController extends Controller
 
     public function providers()
     {
-       $providers = ServiceProvider::with('serviceArea')->get();
+        $providers = ServiceProvider::with('serviceArea')->get();
         return response()->json($providers);
     }
-     public function service_areas()
+
+    public function service_areas()
     {
         $areas = ServiceArea::all();
         return response()->json($areas);
@@ -100,11 +102,14 @@ class AdminController extends Controller
             ], 500);
         }
     }
+
     public function all_bookings()
     {
         $bookings = ServiceOrder::with(['customer', 'items.offering.subService', 'items.offering.provider', 'payments'])->orderBy('created_at', 'desc')->get();
+
         return response()->json($bookings);
     }
+
     public function update_status(Request $request, $id)
     {
         $request->validate([
@@ -128,7 +133,7 @@ class AdminController extends Controller
             'payment_status' => 'required|string'
         ]);
 
-        $order = \App\Models\ServiceOrder::find($id);
+        $order = ServiceOrder::find($id);
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
@@ -142,22 +147,36 @@ class AdminController extends Controller
     public function assign_provider(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:assigned,not_assigned'
+            'status' => 'nullable|in:assigned,not_assigned',
+            'provider_id' => 'nullable|exists:service_providers,id'
         ]);
 
-         $order = ServiceOrder::with('items.offering')->find($id);
+        $order = ServiceOrder::with('items.offering')->find($id);
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        if ($request->status === 'assigned') {
+        if ($request->provider_id) {
+            $provider = ServiceProvider::find($request->provider_id);
+            
+            foreach ($order->items as $item) {
+                $subServiceId = $item->offering->sub_service_id;
+                $offering = ServiceProviderOffering::firstOrCreate(
+                    ['service_provider_id' => $provider->id, 'sub_service_id' => $subServiceId],
+                    ['price_charged' => $item->item_price]
+                );
+                $item->service_provider_offering_id = $offering->id;
+                $item->save();
+            }
+            $message = 'Provider assigned successfully';
+        } elseif ($request->status === 'assigned') {
             // Find or create System Provider
-             $area = ServiceArea::firstOrCreate(
+            $area = ServiceArea::firstOrCreate(
                 ['city_name' => 'Default City', 'area_name' => 'Default Area'],
                 ['postal_code' => '0000']
             );
 
-           $provider = ServiceProvider::firstOrCreate(
+            $provider = ServiceProvider::firstOrCreate(
                 ['email' => 'provider@example.com'],
                 [
                     'full_name' => 'System Provider',
@@ -180,10 +199,6 @@ class AdminController extends Controller
             }
             $message = 'Provider assigned successfully';
         } else {
-            // Since DB is NOT NULL, we "unassign" by keeping it as is or handle it via a specific flag if needed.
-            // But usually, 'Not Assigned' in this context means keeping it in a pending state or 
-            // re-assigning back to a 'System' placeholder if it was something else.
-            // For now, we'll just confirm the intent.
             $message = 'Provider status marked as Not Assigned';
         }
 
