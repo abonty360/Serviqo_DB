@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     protected $fillable = [
-        'service_order_id',
-        'payment_method',
-        'payable_amount',
-        'payment_datetime',
+        'service_order_id', 
+        'payment_method', 
+        'payable_amount', 
+        'payment_datetime', 
         'transaction_reference'
     ];
+
     protected $casts = [
         'payment_datetime' => 'datetime',
     ];

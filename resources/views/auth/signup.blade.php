@@ -301,16 +301,15 @@
         }
     </script>
     <script>
-        function redirectIfLoggedIn() {
-            const token = localStorage.getItem("token");
-
-            if (token) {
-                window.location.replace("/");
+        // Only redirect if user navigates BACK to signup via browser cache
+        window.addEventListener("pageshow", function (e) {
+            if (e.persisted) {
+                const token = localStorage.getItem("token");
+                if (token) {
+                    window.location.replace("/");
+                }
             }
-        }
-
-        document.addEventListener("DOMContentLoaded", redirectIfLoggedIn);
-        window.addEventListener("pageshow", redirectIfLoggedIn);
+        });
     </script>
 </body>
 
