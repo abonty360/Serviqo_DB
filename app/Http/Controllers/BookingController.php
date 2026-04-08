@@ -128,17 +128,9 @@ class BookingController extends Controller
                 $payment->save();
             }
 
-            
-            $confirmation = new OrderConfirmation();
-            $confirmation->service_order_id = $order->id;
-            $confirmation->confirmation_status = 'confirmed';
-            $confirmation->final_amount = $itemPrice;
-            $confirmation->confirmed_at = now();
-            $confirmation->save();
-
             return response()->json([
                 'success' => true,
-                'message' => 'Order saved successfully',
+                'message' => 'Order submitted successfully. Waiting for admin approval.',
                 'booking_id' => $order->id,
                 'amount' => $order->total_amount
             ]);
