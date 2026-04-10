@@ -146,19 +146,28 @@
                     method: 'PATCH',
                     headers: {
                         'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ status })
                 });
+
+                const result = await res.json();
 
                 if (res.ok) {
                     alert('Booking status updated!');
                     loadBookings();
                 } else {
-                    alert('Failed to update status.');
+                    let errorMessage = result.message || 'Failed to update status';
+                    if (result.error) {
+                        errorMessage += '\n' + result.error;
+                    }
+                    alert(errorMessage);
+                    console.error('Error response:', result);
                 }
             } catch (err) {
-                console.error(err);
+                console.error('Error:', err);
+                alert('An error occurred: ' + err.message);
             }
         }
 
@@ -170,19 +179,28 @@
                     method: 'PATCH',
                     headers: {
                         'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ payment_status })
                 });
+
+                const result = await res.json();
 
                 if (res.ok) {
                     alert('Payment status updated!');
                     loadBookings();
                 } else {
-                    alert('Failed to update payment status.');
+                    let errorMessage = result.message || 'Failed to update payment status';
+                    if (result.error) {
+                        errorMessage += '\n' + result.error;
+                    }
+                    alert(errorMessage);
+                    console.error('Error response:', result);
                 }
             } catch (err) {
-                console.error(err);
+                console.error('Error:', err);
+                alert('An error occurred: ' + err.message);
             }
         }
 

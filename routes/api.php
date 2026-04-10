@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\RatingsController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -25,6 +26,10 @@ Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
     Route::post('/book/{id}/complete', [BookingController::class, 'complete']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+     Route::post('/ratings', [RatingsController::class, 'store']);
+    Route::get('/ratings/customer', [RatingsController::class, 'getCustomerReviews']);
+    Route::get('/ratings/provider/{providerId}', [RatingsController::class, 'getProviderRatings']);
 
     // Notifications
     Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);

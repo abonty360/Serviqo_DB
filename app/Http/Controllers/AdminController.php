@@ -57,8 +57,6 @@ class AdminController extends Controller
         try {
             $providerData = collect($validated)->except('offerings')->toArray();
             
-            // Handle 'region' column which exists in DB and is in fillable
-            $providerData['region'] = $providerData['city'];
             $providerData['rating'] = $providerData['rating'] ?? 0.0;
             $providerData['address'] = $providerData['address'] ?? '';
 
@@ -97,7 +95,7 @@ class AdminController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => 'Failed to create provider',
-                'error' => $exceptionMessage = $e->getMessage(),
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
