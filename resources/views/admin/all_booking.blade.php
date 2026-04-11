@@ -40,6 +40,33 @@
 
     @include('components.navbar')
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 right-10 z-[100] transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+        <div id="toastContent" class="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold min-w-[300px]">
+            <div id="toastIconContainer" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <i id="toastIcon" class="fas"></i>
+            </div>
+            <span id="toastMessage" class="flex-1"></span>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/60 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div id="confirmModalContent" class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0">
+            <div class="p-8 text-center">
+                <div class="w-20 h-20 bg-yellow-50 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-question text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Confirmation</h3>
+                <p id="confirmModalMessage" class="text-gray-500 font-medium"></p>
+            </div>
+            <div class="p-6 bg-gray-50/50 flex gap-3">
+                <button id="confirmCancelBtn" class="flex-1 py-4 text-gray-600 font-bold rounded-2xl hover:bg-gray-200 transition">Cancel</button>
+                <button id="confirmApproveBtn" class="flex-1 py-4 bg-green-500 text-white font-bold rounded-2xl hover:bg-green-600 transition shadow-lg shadow-green-200">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center justify-between mb-8">
@@ -138,8 +165,67 @@
             }
         }
 
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const content = document.getElementById('toastContent');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            msg.textContent = message;
+            
+            if (type === 'success') {
+                content.className = 'flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold min-w-[300px] bg-green-500 border border-green-600';
+                icon.className = 'fas fa-check-circle text-lg';
+            } else {
+                content.className = 'flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold min-w-[300px] bg-red-500 border border-red-600';
+                icon.className = 'fas fa-exclamation-circle text-lg';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function showConfirm(message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                const content = document.getElementById('confirmModalContent');
+                const msg = document.getElementById('confirmModalMessage');
+                const cancelBtn = document.getElementById('confirmCancelBtn');
+                const approveBtn = document.getElementById('confirmApproveBtn');
+
+                msg.textContent = message;
+                modal.classList.remove('hidden', 'flex');
+                modal.classList.add('flex');
+                
+                setTimeout(() => {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 10);
+
+                const closeModal = (result) => {
+                    content.classList.remove('scale-100', 'opacity-100');
+                    content.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        resolve(result);
+                    }, 200);
+                };
+
+                approveBtn.onclick = () => closeModal(true);
+                cancelBtn.onclick = () => closeModal(false);
+                modal.onclick = (e) => { if (e.target === modal) closeModal(false); };
+            });
+        }
+
         async function updateBookingStatus(id, status) {
-            if (!confirm(`Are you sure you want to ${status === 'Order Confirmed' ? 'approve' : 'decline'} this booking?`)) return;
+            const confirmed = await showConfirm(`Are you sure you want to ${status === 'Order Confirmed' ? 'approve' : 'decline'} this booking?`);
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`/api/admin/bookings/${id}/status`, {
@@ -155,24 +241,25 @@
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Booking status updated!');
+                    showToast('Booking status updated!');
                     loadBookings();
                 } else {
                     let errorMessage = result.message || 'Failed to update status';
                     if (result.error) {
                         errorMessage += '\n' + result.error;
                     }
-                    alert(errorMessage);
+                    showToast(errorMessage, 'error');
                     console.error('Error response:', result);
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('An error occurred: ' + err.message);
+                showToast('An error occurred: ' + err.message, 'error');
             }
         }
 
         async function updatePaymentStatus(id, payment_status) {
-            if (!confirm(`Are you sure you want to mark this payment as ${payment_status}?`)) return;
+            const confirmed = await showConfirm(`Are you sure you want to mark this payment as ${payment_status}?`);
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`/api/admin/bookings/${id}/payment-status`, {
@@ -188,19 +275,19 @@
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Payment status updated!');
+                    showToast('Payment status updated!');
                     loadBookings();
                 } else {
                     let errorMessage = result.message || 'Failed to update payment status';
                     if (result.error) {
                         errorMessage += '\n' + result.error;
                     }
-                    alert(errorMessage);
+                    showToast(errorMessage, 'error');
                     console.error('Error response:', result);
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('An error occurred: ' + err.message);
+                showToast('An error occurred: ' + err.message, 'error');
             }
         }
 
@@ -220,13 +307,14 @@
                 });
 
                 if (res.ok) {
-                    alert('Provider assigned successfully!');
+                    showToast('Provider assigned successfully!');
                     loadBookings();
                 } else {
-                    alert('Failed to update provider status.');
+                    showToast('Failed to update provider status.', 'error');
                 }
             } catch (err) {
                 console.error(err);
+                showToast('An error occurred.', 'error');
             }
         }
 
@@ -280,15 +368,16 @@
 
                 const paymentMethod = b.payments && b.payments[0] ? b.payments[0].payment_method.toLowerCase() : '';
                 const paymentMethodDisplay = paymentMethod === 'cash' ? 'COD' : (paymentMethod === 'mobile_banking' ? 'Mobile Banking' : 'N/A');
+                
                 let paymentStatusText = b.payment_status;
                 let paymentStatusClass = b.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
 
-                if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
-                    paymentStatusText = 'pending payment';
+                if (paymentMethod === 'cash') {
+                    paymentStatusText = 'pending';
                     paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                } else if (paymentMethod === 'cash') {
-                    paymentStatusText = 'paid';
-                    paymentStatusClass = 'bg-green-100 text-green-700';
+                } else if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
+                    paymentStatusText = 'pending';
+                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
                 }
 
                 return `
@@ -305,6 +394,9 @@
                         <td class="px-4 py-4">
                             <div class="flex flex-col gap-1">
                                 <span class="text-xs font-bold text-gray-800">${paymentMethodDisplay}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase w-fit ${paymentStatusClass}">
+                                    ${paymentStatusText}
+                                </span>
                                 ${paymentMethod === 'mobile_banking' && b.payment_status !== 'paid' ? `
                                     <button onclick="updatePaymentStatus(${b.id}, 'paid')" class="text-[9px] text-green-600 hover:text-green-700 font-bold underline text-left">
                                         Approve Payment
@@ -347,15 +439,16 @@
 
                 const paymentMethod = b.payments && b.payments[0] ? b.payments[0].payment_method.toLowerCase() : '';
                 const paymentMethodDisplay = paymentMethod === 'cash' ? 'COD' : (paymentMethod === 'mobile_banking' ? 'Mobile Banking' : 'N/A');
+                
                 let paymentStatusText = b.payment_status;
                 let paymentStatusClass = b.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
 
-                if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
-                    paymentStatusText = 'pending payment';
+                if (paymentMethod === 'cash') {
+                    paymentStatusText = 'pending';
                     paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                } else if (paymentMethod === 'cash') {
-                    paymentStatusText = 'paid';
-                    paymentStatusClass = 'bg-green-100 text-green-700';
+                } else if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
+                    paymentStatusText = 'pending';
+                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
                 }
 
                 return `
@@ -372,6 +465,9 @@
                         <td class="px-4 py-4">
                             <div class="flex flex-col gap-1">
                                 <span class="text-xs font-bold text-gray-800">${paymentMethodDisplay}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase w-fit ${paymentStatusClass}">
+                                    ${paymentStatusText}
+                                </span>
                             </div>
                         </td>
                         <td class="px-4 py-4">

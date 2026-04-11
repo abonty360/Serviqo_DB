@@ -9,7 +9,7 @@
     </a>
 
     <!-- Center Links -->
-    <div class="hidden md:flex ml-auto space-x-10 font-medium text-gray-600" id="centerLinks">
+    <div class="hidden md:flex ml-auto mr-10 space-x-10 font-medium text-gray-600" id="centerLinks">
         <a href="{{ route('services') }}" class="{{ request()->routeIs('services') ? 'text-green-600' : 'hover:text-green-600' }}">Services</a>
         <a href="{{ route('how-it-works') }}" class="{{ request()->routeIs('how-it-works') ? 'text-green-600' : 'hover:text-green-600' }}">How it Works</a>
         <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-green-600' : 'hover:text-green-600' }}">About</a>
