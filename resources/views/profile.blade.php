@@ -204,6 +204,14 @@
             // Store current order for rating
             window.currentOrderForRating = order;
 
+            // Show/hide completion button - only show if status is 'Order Confirmed'
+            const completeBtn = document.getElementById('completeOrderBtn');
+            if (order.status === 'Order Confirmed') {
+                completeBtn.classList.remove('hidden');
+            } else {
+                completeBtn.classList.add('hidden');
+            }
+
             // Show/hide rating button based on status
             const ratingBtn = document.getElementById('openRatingModalBtn');
             if (order.status === 'Order Confirmed' || order.status === 'completed') {
@@ -214,6 +222,47 @@
 
 
             document.getElementById('bookingDetailsModal').classList.remove('hidden');
+        }
+
+        async function completeOrder() {
+            const order = window.currentOrderForRating;
+            if (!order) return;
+
+            const token = localStorage.getItem("token");
+            const btn = document.getElementById('completeOrderBtn');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/book/${order.id}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showPopupMessage('Success', 'Order marked as completed!', 'success');
+                    setTimeout(() => {
+                        closeBookingDetailsModal();
+                        closePopupMessage();
+                        loadProfile();
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'Failed to complete order');
+                }
+            } catch (error) {
+                showPopupMessage('Error', error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function closeBookingDetailsModal() {
@@ -813,10 +862,13 @@
                     </div>
                 </div>
                 <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button id="completeOrderBtn" onclick="completeOrder()" class="py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition hidden flex items-center gap-2">
+                        <i class="fas fa-check"></i> Service Completed
+                    </button>
                     <button id="openRatingModalBtn" onclick="openRatingModal()" class="py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition hidden flex items-center gap-2">
                         <i class="fas fa-star"></i> Rate & Review
                     </button>
-                    <button onclick="closeBookingDetailsModal()" class="w-full py-3 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Close Window</button>
+                    <button onclick="closeBookingDetailsModal()" class="py-3 px-6 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Close Window</button>
                 </div>
             </div>
         </div>

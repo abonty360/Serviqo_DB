@@ -372,14 +372,6 @@
                 let paymentStatusText = b.payment_status;
                 let paymentStatusClass = b.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
 
-                if (paymentMethod === 'cash') {
-                    paymentStatusText = 'pending';
-                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                } else if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
-                    paymentStatusText = 'pending';
-                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                }
-
                 return `
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-4 py-4 font-medium text-gray-900">#${b.id}</td>
@@ -442,14 +434,6 @@
                 
                 let paymentStatusText = b.payment_status;
                 let paymentStatusClass = b.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-
-                if (paymentMethod === 'cash') {
-                    paymentStatusText = 'pending';
-                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                } else if (paymentMethod === 'mobile_banking' && b.payment_status !== 'paid') {
-                    paymentStatusText = 'pending';
-                    paymentStatusClass = 'bg-yellow-100 text-yellow-700';
-                }
 
                 return `
                     <tr class="hover:bg-gray-50 transition border-b border-gray-50">

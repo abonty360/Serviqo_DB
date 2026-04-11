@@ -151,10 +151,19 @@ class BookingController extends Controller
 
     public function complete($id)
     {
-        $order = ServiceOrder::find($id);
+        $order = ServiceOrder::with('payments')->find($id);
         
         if ($order) {
             $order->status = 'completed';
+            
+            // Check if payment method is COD (stored as 'cash')
+            $payment = $order->payments->first();
+            if ($payment && strtolower($payment->payment_method) === 'cash') {
+                $order->payment_status = 'paid';
+                $payment->payment_datetime = now();
+                $payment->save();
+            }
+            
             $order->save();
 
             $confirmation = new OrderConfirmation();
