@@ -66,6 +66,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="px-6 py-4">
+                    <div id="providersPagination" class="flex items-center justify-end gap-2"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -174,8 +177,55 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-24 right-8 z-[100] transform translate-x-full transition-all duration-300 ease-out hidden">
+        <div id="toastContent" class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 flex items-center min-w-[320px]">
+            <div id="toastIcon" class="w-10 h-10 rounded-xl flex items-center justify-center mr-4">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="flex-grow">
+                <p id="toastMessage" class="text-sm font-bold text-gray-900"></p>
+            </div>
+            <button onclick="hideToast()" class="ml-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <script>
         const token = localStorage.getItem("token");
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const content = document.getElementById('toastContent');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            msg.textContent = message;
+
+            if (type === 'success') {
+                icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center mr-4 bg-green-100 text-green-600';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center mr-4 bg-red-100 text-red-600';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 10);
+
+            setTimeout(hideToast, 5000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
 
         if (!token) {
             window.location.href = "/login";
@@ -353,7 +403,7 @@
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Provider and offerings added successfully!');
+                    showToast('Provider and offerings added successfully!');
                     closeAddModal();
                     loadProviders();
                 } else {
@@ -363,11 +413,11 @@
                     } else if (result.error) {
                         errorMessage += '\n' + result.error;
                     }
-                    alert('Error: ' + errorMessage);
+                    showToast('Error: ' + errorMessage, 'error');
                 }
             } catch (err) {
                 console.error('Error adding provider:', err);
-                alert('An error occurred. Please try again.');
+                showToast('An error occurred. Please try again.', 'error');
             }
         });
 
@@ -407,39 +457,67 @@
                     return;
                 }
 
-                let html = "";
-                providers.forEach(p => {
-                    html += `
-                        <tr class="hover:bg-gray-50/50 transition-colors">
-                            <td class="px-8 py-6">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold mr-4">
-                                        ${p.full_name ? p.full_name.charAt(0) : '?'}
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-bold text-gray-900">${p.full_name || 'Unnamed'}</div>
-                                        <div class="text-xs text-gray-400">NID: ${p.nid || 'N/A'}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-8 py-6">
-                                <div class="text-sm text-gray-700 font-medium">${p.email}</div>
-                                <div class="text-xs text-gray-400">${p.phone}</div>
-                            </td>
-                            <td class="px-8 py-6">
-                                <div class="text-sm text-gray-700 font-medium">${p.city}</div>
-                                <div class="text-xs text-gray-400">${p.service_area ? p.service_area.area_name : 'Unknown Area'}</div>
-                            </td>
-                            <td class="px-8 py-6 text-center">
-                                <div class="inline-flex items-center px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-bold">
-                                    <i class="fas fa-star mr-1"></i> ${p.rating || '0.0'}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
+                window.providersData = providers || [];
+                window.providersPage = 1;
+                window.providersPageSize = 10;
 
-                list.innerHTML = html;
+                function renderProvidersPage(page) {
+                    window.providersPage = page;
+                    const start = (page - 1) * window.providersPageSize;
+                    const pageItems = window.providersData.slice(start, start + window.providersPageSize);
+                    let html = "";
+                    pageItems.forEach(p => {
+                        html += `
+                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold mr-4">
+                                            ${p.full_name ? p.full_name.charAt(0) : '?'}
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-bold text-gray-900">${p.full_name || 'Unnamed'}</div>
+                                            <div class="text-xs text-gray-400">NID: ${p.nid || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="text-sm text-gray-700 font-medium">${p.email}</div>
+                                    <div class="text-xs text-gray-400">${p.phone}</div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="text-sm text-gray-700 font-medium">${p.city}</div>
+                                    <div class="text-xs text-gray-400">${p.service_area ? p.service_area.area_name : 'Unknown Area'}</div>
+                                </td>
+                                <td class="px-8 py-6 text-center">
+                                    <div class="inline-flex items-center px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-bold">
+                                        <i class="fas fa-star mr-1"></i> ${p.rating || '0.0'}
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    document.getElementById('providersList').innerHTML = html.length ? html : `
+                        <tr>
+                            <td colspan="4" class="px-8 py-12 text-center text-gray-500 italic">
+                                No service providers found.
+                            </td>
+                        </tr>`;
+                    renderProvidersPagination();
+                }
+
+                function renderProvidersPagination() {
+                    const total = window.providersData.length;
+                    const totalPages = Math.max(1, Math.ceil(total / window.providersPageSize));
+                    const container = document.getElementById('providersPagination');
+                    if (!container) return;
+                    let html = '';
+                    html += `<button onclick="renderProvidersPage(${Math.max(1, window.providersPage - 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">&laquo; Prev</button>`;
+                    html += `<span class="px-3 text-sm text-gray-600">Page ${window.providersPage} of ${totalPages}</span>`;
+                    html += `<button onclick="renderProvidersPage(${Math.min(totalPages, window.providersPage + 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">Next &raquo;</button>`;
+                    container.innerHTML = html;
+                }
+
+                renderProvidersPage(1);
 
             } catch (err) {
                 console.error("Error:", err);

@@ -112,6 +112,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="mt-4 flex justify-end">
+                    <div id="pendingPagination" class="flex items-center gap-2"></div>
+                </div>
             </div>
 
             <!-- Completed & Others Section -->
@@ -141,6 +144,9 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <div id="historyPagination" class="flex items-center gap-2"></div>
                 </div>
             </div>
         </div>
@@ -341,8 +347,15 @@
                 const pending = bookings.filter(b => b.status === 'Pending' || b.status === 'pending');
                 const history = bookings.filter(b => b.status !== 'Pending' && b.status !== 'pending');
 
-                pendingBody.innerHTML = pending.length ? renderPending(pending) : `<tr><td colspan="9" class="py-8 text-center text-gray-400">No pending bookings.</td></tr>`;
-                historyBody.innerHTML = history.length ? renderHistory(history) : `<tr><td colspan="7" class="py-8 text-center text-gray-400">No booking history.</td></tr>`;
+                // Store for client-side pagination
+                window.pendingBookings = pending || [];
+                window.historyBookings = history || [];
+                window.pendingPage = 1;
+                window.historyPage = 1;
+                window.bookingsPageSize = 10;
+
+                renderPendingPage(1);
+                renderHistoryPage(1);
 
             } catch (err) {
                 pendingBody.innerHTML = historyBody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-red-400">Error loading data.</td></tr>`;
@@ -467,6 +480,45 @@
                 `;
             }).join('');
         }
+
+        // --- Pagination helpers for bookings ---
+        function paginate(array, page, size) {
+            const start = (page - 1) * size;
+            return array.slice(start, start + size);
+        }
+
+        function renderPendingPage(page) {
+            window.pendingPage = page;
+            const items = paginate(window.pendingBookings || [], page, window.bookingsPageSize || 10);
+            const pendingBody = document.getElementById('pendingTableBody');
+            pendingBody.innerHTML = items.length ? renderPending(items) : `<tr><td colspan="9" class="py-8 text-center text-gray-400">No pending bookings.</td></tr>`;
+            renderBookingsPagination('pending');
+        }
+
+        function renderHistoryPage(page) {
+            window.historyPage = page;
+            const items = paginate(window.historyBookings || [], page, window.bookingsPageSize || 10);
+            const historyBody = document.getElementById('historyTableBody');
+            historyBody.innerHTML = items.length ? renderHistory(items) : `<tr><td colspan="7" class="py-8 text-center text-gray-400">No booking history.</td></tr>`;
+            renderBookingsPagination('history');
+        }
+
+        function renderBookingsPagination(type) {
+            const total = type === 'pending' ? (window.pendingBookings || []).length : (window.historyBookings || []).length;
+            const page = type === 'pending' ? (window.pendingPage || 1) : (window.historyPage || 1);
+            const size = window.bookingsPageSize || 10;
+            const totalPages = Math.max(1, Math.ceil(total / size));
+            const container = document.getElementById(type === 'pending' ? 'pendingPagination' : 'historyPagination');
+            if (!container) return;
+
+            let html = '';
+            html += `<button onclick="${type === 'pending' ? 'renderPendingPage' : 'renderHistoryPage'}(${Math.max(1, page - 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">&laquo; Prev</button>`;
+            html += `<span class="px-3 text-sm text-gray-600">Page ${page} of ${totalPages}</span>`;
+            html += `<button onclick="${type === 'pending' ? 'renderPendingPage' : 'renderHistoryPage'}(${Math.min(totalPages, page + 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">Next &raquo;</button>`;
+
+            container.innerHTML = html;
+        }
+
  window.addEventListener("pageshow", function (event) {
             if (event.persisted) {
                 if (!localStorage.getItem("token")) {
