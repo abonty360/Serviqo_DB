@@ -384,29 +384,40 @@
                 const location = b.customer ? `${b.customer.city}, ${b.customer.address || ''}` : 'N/A';
                 
                 const currentProvider = b.items && b.items[0] && b.items[0].offering && b.items[0].offering.provider && b.items[0].offering.provider.full_name !== 'System Provider' ? b.items[0].offering.provider : null;
-                const customerCity = b.customer ? b.customer.city : '';
+                const customerCity = b.customer && b.customer.city ? b.customer.city.toLowerCase().trim() : '';
+                const customerRegion = b.customer && b.customer.region ? b.customer.region.toLowerCase().trim() : '';
                 
-                // Get all required sub-service IDs for this order
-                const requiredSubServiceIds = b.items ? b.items.map(item => item.offering ? item.offering.sub_service_id : null).filter(id => id !== null) : [];
-
-                // Filter providers that match the customer's city AND have ALL the required sub-services
+                // Location-based filtering: Match City and Region
                 const matchingProviders = providersList.filter(p => {
-                    // Check city match
-                    const cityMatch = p.city === customerCity;
-                    if (!cityMatch) return false;
+                    // Check city match (case-insensitive) - Must always match City
+                    const pCity = p.city ? p.city.toLowerCase().trim() : '';
+                    if (pCity !== customerCity) return false;
 
-                    // Check if provider has all required sub-services
-                    return requiredSubServiceIds.every(id => {
-                        const directMatch = p.sub_service_id && String(p.sub_service_id) === String(id);
-                        const arrayMatch = p.offerings ? p.offerings.some(o => String(o.sub_service_id) === String(id)) : false;
-                        return directMatch || arrayMatch;
-                    });
+                    // If customer has a region, prioritize matching it
+                    if (customerRegion) {
+                        const pRegion = p.service_area && p.service_area.area_name ? p.service_area.area_name.toLowerCase().trim() : 
+                                       (p.region ? p.region.toLowerCase().trim() : '');
+                        
+                        // If provider is in a different region, filter them out
+                        // But if provider has NO region, we might still show them in the city? 
+                        // Let's stick to strict region matching if customer has one.
+                        return pRegion === customerRegion;
+                    }
+                    
+                    return true;
                 });
 
+                // Ensure currently assigned provider is always in the list
+                let displayProviders = [...matchingProviders];
+                if (currentProvider && !displayProviders.some(p => p.id === currentProvider.id)) {
+                    displayProviders.push(currentProvider);
+                }
+
                 let providerOptions = `<option value="">Select Provider</option>`;
-                matchingProviders.forEach(p => {
+                displayProviders.forEach(p => {
                     const isSelected = currentProvider && currentProvider.id === p.id;
-                    providerOptions += `<option value="${p.id}" ${isSelected ? 'selected' : ''}>${p.full_name}</option>`;
+                    const pReg = p.service_area && p.service_area.area_name ? p.service_area.area_name : (p.region || 'N/A');
+                    providerOptions += `<option value="${p.id}" ${isSelected ? 'selected' : ''}>${p.full_name} (${p.city}, ${pReg})</option>`;
                 });
 
                 const paymentMethod = b.payments && b.payments[0] ? b.payments[0].payment_method.toLowerCase() : '';

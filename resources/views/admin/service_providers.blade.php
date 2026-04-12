@@ -421,6 +421,62 @@
             }
         });
 
+        function renderProvidersPage(page) {
+            window.providersPage = page;
+            const start = (page - 1) * window.providersPageSize;
+            const pageItems = window.providersData.slice(start, start + window.providersPageSize);
+            let html = "";
+            pageItems.forEach(p => {
+                html += `
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold mr-4">
+                                    ${p.full_name ? p.full_name.charAt(0) : '?'}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-gray-900">${p.full_name || 'Unnamed'}</div>
+                                    <div class="text-xs text-gray-400">NID: ${p.nid || 'N/A'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="text-sm text-gray-700 font-medium">${p.email}</div>
+                            <div class="text-xs text-gray-400">${p.phone}</div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="text-sm text-gray-700 font-medium">${p.city}</div>
+                            <div class="text-xs text-gray-400">${p.service_area ? p.service_area.area_name : 'Unknown Area'}</div>
+                        </td>
+                        <td class="px-8 py-6 text-center">
+                            <div class="inline-flex items-center px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-bold">
+                                <i class="fas fa-star mr-1"></i> ${p.rating || '0.0'}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('providersList').innerHTML = html.length ? html : `
+                <tr>
+                    <td colspan="4" class="px-8 py-12 text-center text-gray-500 italic">
+                        No service providers found.
+                    </td>
+                </tr>`;
+            renderProvidersPagination();
+        }
+
+        function renderProvidersPagination() {
+            const total = window.providersData.length;
+            const totalPages = Math.max(1, Math.ceil(total / window.providersPageSize));
+            const container = document.getElementById('providersPagination');
+            if (!container) return;
+            let html = '';
+            html += `<button onclick="renderProvidersPage(${Math.max(1, window.providersPage - 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-colors hover:border-gray-300">&laquo; Prev</button>`;
+            html += `<span class="px-4 text-sm font-medium text-gray-600">Page ${window.providersPage} of ${totalPages}</span>`;
+            html += `<button onclick="renderProvidersPage(${Math.min(totalPages, window.providersPage + 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-colors hover:border-gray-300">Next &raquo;</button>`;
+            container.innerHTML = html;
+        }
+
         async function loadProviders() {
             try {
                 const res = await fetch("/api/admin/providers", {
@@ -435,87 +491,12 @@
                     window.location.href = "/login";
                     return;
                 }
- window.addEventListener("pageshow", function (event) {
-            if (event.persisted) {
-                if (!localStorage.getItem("token")) {
-                    window.location.replace("/login");
-                }
-            }
-        });
 
                 const providers = await res.json();
-                const list = document.getElementById("providersList");
-
-                if (!providers || providers.length === 0) {
-                    list.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="px-8 py-12 text-center text-gray-500 italic">
-                                No service providers found.
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
+                
                 window.providersData = providers || [];
                 window.providersPage = 1;
                 window.providersPageSize = 10;
-
-                function renderProvidersPage(page) {
-                    window.providersPage = page;
-                    const start = (page - 1) * window.providersPageSize;
-                    const pageItems = window.providersData.slice(start, start + window.providersPageSize);
-                    let html = "";
-                    pageItems.forEach(p => {
-                        html += `
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold mr-4">
-                                            ${p.full_name ? p.full_name.charAt(0) : '?'}
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-900">${p.full_name || 'Unnamed'}</div>
-                                            <div class="text-xs text-gray-400">NID: ${p.nid || 'N/A'}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <div class="text-sm text-gray-700 font-medium">${p.email}</div>
-                                    <div class="text-xs text-gray-400">${p.phone}</div>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <div class="text-sm text-gray-700 font-medium">${p.city}</div>
-                                    <div class="text-xs text-gray-400">${p.service_area ? p.service_area.area_name : 'Unknown Area'}</div>
-                                </td>
-                                <td class="px-8 py-6 text-center">
-                                    <div class="inline-flex items-center px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-bold">
-                                        <i class="fas fa-star mr-1"></i> ${p.rating || '0.0'}
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                    document.getElementById('providersList').innerHTML = html.length ? html : `
-                        <tr>
-                            <td colspan="4" class="px-8 py-12 text-center text-gray-500 italic">
-                                No service providers found.
-                            </td>
-                        </tr>`;
-                    renderProvidersPagination();
-                }
-
-                function renderProvidersPagination() {
-                    const total = window.providersData.length;
-                    const totalPages = Math.max(1, Math.ceil(total / window.providersPageSize));
-                    const container = document.getElementById('providersPagination');
-                    if (!container) return;
-                    let html = '';
-                    html += `<button onclick="renderProvidersPage(${Math.max(1, window.providersPage - 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">&laquo; Prev</button>`;
-                    html += `<span class="px-3 text-sm text-gray-600">Page ${window.providersPage} of ${totalPages}</span>`;
-                    html += `<button onclick="renderProvidersPage(${Math.min(totalPages, window.providersPage + 1)})" class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">Next &raquo;</button>`;
-                    container.innerHTML = html;
-                }
 
                 renderProvidersPage(1);
 
