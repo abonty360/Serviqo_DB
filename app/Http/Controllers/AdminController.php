@@ -21,7 +21,7 @@ class AdminController extends Controller
 
     public function providers()
     {
-        $providers = ServiceProvider::with('serviceArea')->get();
+        $providers = ServiceProvider::with(['serviceArea', 'offerings'])->get();
         return response()->json($providers);
     }
 

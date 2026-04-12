@@ -370,8 +370,19 @@
                 const currentProvider = b.items && b.items[0] && b.items[0].offering ? b.items[0].offering.provider : null;
                 const customerCity = b.customer ? b.customer.city : '';
                 
-                // Filter providers that match the customer's city
-                const matchingProviders = providersList.filter(p => p.city === customerCity);
+                // Get all required sub-service IDs for this order
+                const requiredSubServiceIds = b.items ? b.items.map(item => item.offering ? item.offering.sub_service_id : null).filter(id => id !== null) : [];
+
+                // Filter providers that match the customer's city AND have ALL the required sub-services
+                const matchingProviders = providersList.filter(p => {
+                    // Check city match
+                    const cityMatch = p.city === customerCity;
+                    if (!cityMatch) return false;
+
+                    // Check if provider has all required sub-services
+                    const providerSubServiceIds = p.offerings ? p.offerings.map(o => o.sub_service_id) : [];
+                    return requiredSubServiceIds.every(id => providerSubServiceIds.includes(id));
+                });
 
                 let providerOptions = `<option value="">Select Provider</option>`;
                 matchingProviders.forEach(p => {

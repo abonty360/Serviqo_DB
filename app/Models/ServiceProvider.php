@@ -12,4 +12,9 @@ class ServiceProvider extends Model
     {
         return $this->belongsTo(ServiceArea::class);
     }
+
+    public function offerings()
+    {
+        return $this->hasMany(ServiceProviderOffering::class, 'service_provider_id');
+    }
 }
