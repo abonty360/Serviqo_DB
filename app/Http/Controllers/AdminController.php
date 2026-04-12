@@ -209,13 +209,15 @@ class AdminController extends Controller
             $provider = ServiceProvider::find($request->provider_id);
             
             foreach ($order->items as $item) {
-                $subServiceId = $item->offering->sub_service_id;
-                $offering = ServiceProviderOffering::firstOrCreate(
-                    ['service_provider_id' => $provider->id, 'sub_service_id' => $subServiceId],
-                    ['price_charged' => $item->item_price]
-                );
-                $item->service_provider_offering_id = $offering->id;
-                $item->save();
+                if ($item->offering) {
+                    $subServiceId = $item->offering->sub_service_id;
+                    $offering = ServiceProviderOffering::firstOrCreate(
+                        ['service_provider_id' => $provider->id, 'sub_service_id' => $subServiceId],
+                        ['price_charged' => $item->item_price ?? 0.00, 'rating' => 0]
+                    );
+                    $item->service_provider_offering_id = $offering->id;
+                    $item->save();
+                }
             }
             $message = 'Provider assigned successfully';
         } else {
