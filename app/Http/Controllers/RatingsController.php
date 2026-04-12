@@ -72,6 +72,14 @@ class RatingsController extends Controller
                 'review_date' => now()->toDateString()
             ]);
 
+            // Update Provider's average rating
+            $provider = \App\Models\ServiceProvider::find($validated['service_provider_id']);
+            if ($provider) {
+                $avgRating = RatingsReview::where('service_provider_id', $provider->id)->avg('rating');
+                $provider->rating = number_format($avgRating, 1);
+                $provider->save();
+            }
+
             return response()->json([
                 'message' => 'Rating submitted successfully',
                 'data' => $rating
