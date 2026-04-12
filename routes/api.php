@@ -4,9 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\RatingsController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/subservices', function () {
+    return \App\Models\Category::select('id', 'name')->get();
+});
 
 Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
 
@@ -24,7 +29,17 @@ Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
     Route::post('/book', [BookingController::class, 'store']);
     Route::post('/book/{id}/complete', [BookingController::class, 'complete']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+     Route::post('/ratings', [RatingsController::class, 'store']);
+    Route::get('/ratings/customer', [RatingsController::class, 'getCustomerReviews']);
+    Route::get('/ratings/provider/{providerId}', [RatingsController::class, 'getProviderRatings']);
+
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
 
 });
 
@@ -41,4 +56,3 @@ Route::middleware(['auth:api'])->prefix('admin')->group(function () {
     Route::patch('/bookings/{id}/assign', [AdminController::class, 'assign_provider']);
 
 });
-

@@ -27,41 +27,47 @@
                 return;
             }
 
-            const response = await fetch("/api/me", {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Accept": "application/json"
+            try {
+                const response = await fetch("/api/me", {
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json"
+                    }
+                });
+
+             if (!response.ok) {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                    return;
                 }
-            });
 
-            if (!response.ok) {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-                return;
+                const user = await response.json();
+               
+                 document.getElementById("profileName").textContent =
+                    user.fname + " " + user.lname;
+                document.getElementById("profileLocation").innerHTML =
+                    `<i class="fas fa-map-marker-alt mr-2"></i> ${user.city}, ${user.region}`;
+
+               document.getElementById("profileEmail").textContent = user.email;
+
+                   document.getElementById("profilePhone").textContent =
+                    user.phone ?? "Not provided";
+
+                  // Update stats
+                document.getElementById("bookingsCount").textContent = user.service_orders ? user.service_orders.length : 0;
+                document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
+
+            
+             // Store user data globally
+                window.currentUserData = user;
+           
+                // Initial Render
+                window.activityLimit = 5;
+                renderActivities();
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Failed to load profile. Please refresh the page.');
             }
-
-            const user = await response.json();
-
-            document.getElementById("profileName").textContent =
-                user.fname + " " + user.lname;
-            document.getElementById("profileLocation").innerHTML =
-                `<i class="fas fa-map-marker-alt mr-2"></i> ${user.city}, ${user.region}`;
-
-            document.getElementById("profileEmail").textContent = user.email;
-
-            document.getElementById("profilePhone").textContent =
-                user.phone ?? "Not provided";
-
-            // Update stats
-            document.getElementById("bookingsCount").textContent = user.service_orders ? user.service_orders.length : 0;
-            document.getElementById("reviewsCount").textContent = user.reviews ? user.reviews.length : 0;
-
-            // Store user data globally
-            window.currentUserData = user;
-
-            // Initial Render
-            window.activityLimit = 5;
-            renderActivities();
         }
 
         function renderActivities() {
@@ -195,7 +201,68 @@
             document.getElementById('detailsPayment').textContent = order.payment_status;
             document.getElementById('detailsTotal').textContent = "৳" + order.total_amount;
 
+            // Store current order for rating
+            window.currentOrderForRating = order;
+
+            // Show/hide completion button - only show if status is 'Order Confirmed'
+            const completeBtn = document.getElementById('completeOrderBtn');
+            if (order.status === 'Order Confirmed') {
+                completeBtn.classList.remove('hidden');
+            } else {
+                completeBtn.classList.add('hidden');
+            }
+
+            // Show/hide rating button based on status
+            const ratingBtn = document.getElementById('openRatingModalBtn');
+            if (order.status === 'Order Confirmed' || order.status === 'completed') {
+                ratingBtn.classList.remove('hidden');
+            } else {
+                ratingBtn.classList.add('hidden');
+            }
+
+
             document.getElementById('bookingDetailsModal').classList.remove('hidden');
+        }
+
+        async function completeOrder() {
+            const order = window.currentOrderForRating;
+            if (!order) return;
+
+            const token = localStorage.getItem("token");
+            const btn = document.getElementById('completeOrderBtn');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/book/${order.id}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showPopupMessage('Success', 'Order marked as completed!', 'success');
+                    setTimeout(() => {
+                        closeBookingDetailsModal();
+                        closePopupMessage();
+                        loadProfile();
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'Failed to complete order');
+                }
+            } catch (error) {
+                showPopupMessage('Error', error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function closeBookingDetailsModal() {
@@ -296,6 +363,292 @@
             }
         }
 
+        function togglePasswordModal(action) {
+            const modal = document.getElementById('passwordSecurityModal');
+            const form = document.getElementById('passwordChangeForm');
+            const errorDiv = document.getElementById('passwordChangeError');
+            
+            if (action === 'open') {
+                form.reset();
+                errorDiv.classList.add('hidden');
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        async function submitPasswordChange(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = document.getElementById('savePasswordBtn');
+            const errorDiv = document.getElementById('passwordChangeError');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            const currentPassword = form.current_password.value;
+            const newPassword = form.new_password.value;
+            const confirmPassword = form.new_password_confirmation.value;
+
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = "New passwords do not match";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errorDiv.textContent = "New password must be at least 6 characters";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+            submitBtn.disabled = true;
+            errorDiv.classList.add('hidden');
+
+            const token = localStorage.getItem("token");
+
+            try {
+                const response = await fetch("/api/change-password", {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        new_password_confirmation: confirmPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || result.errors?.new_password?.[0] || 'Failed to change password');
+                }
+
+                showPopupMessage('Success', 'Your password has been changed successfully!', 'success');
+                togglePasswordModal('close');
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
+        // Rating and Review Functions
+        function openRatingModal() {
+            const order = window.currentOrderForRating;
+            if (!order) return;
+
+            // Store the current order for rating
+            window.ratingOrderId = order.id;
+            window.ratingOrderData = order;
+            window.currentRating = 0;
+
+            console.log('Opening rating modal with order:', {
+                id: order.id,
+                customer_id: order.customer_id,
+                status: order.status,
+                payment_status: order.payment_status
+            });
+
+            // Update modal with order information
+            const modal = document.getElementById('ratingModal');
+            if (!modal) return;
+
+            // Populate order details from the rating modal (simpler version)
+            const serviceName = order.items && order.items.length > 0 && order.items[0].offering && order.items[0].offering.sub_service 
+                ? order.items[0].offering.sub_service.service_name 
+                : 'General Service';
+            
+            document.getElementById('ratingOrderTitle').textContent = serviceName;
+            document.getElementById('ratingOrderId').textContent = "#" + String(order.id).padStart(5, '0');
+            
+            // Reset stars
+            document.getElementById('ratingStarContainer').innerHTML = '';
+            document.getElementById('ratingInput').value = 0;
+            document.getElementById('reviewNotesInput').value = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('button');
+                star.type = 'button';
+                star.className = 'text-3xl transition hover:scale-110';
+                star.innerHTML = '<i class="fas fa-star" style="color: #d1d5db;"></i>';
+                star.onclick = () => setRating(i);
+                document.getElementById('ratingStarContainer').appendChild(star);
+            }
+
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+
+        function closeRatingModal() {
+            const modal = document.getElementById('ratingModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            window.ratingOrderId = null;
+            window.ratingOrderData = null;
+            window.currentRating = 0;
+        }
+
+        function setRating(rating) {
+            document.getElementById('ratingInput').value = rating;
+            const stars = document.getElementById('ratingStarContainer').querySelectorAll('button');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.innerHTML = '<i class="fas fa-star" style="color: #22c55e;"></i>';
+                } else {
+                    star.innerHTML = '<i class="fas fa-star" style="color: #d1d5db;"></i>';
+                }
+            });
+        }
+
+        async function submitRating() {
+            const rating = parseInt(document.getElementById('ratingInput').value);
+            const reviewText = document.getElementById('reviewNotesInput').value.trim();
+            const orderId = window.ratingOrderId;
+            const token = localStorage.getItem('token');
+
+            // Validation
+            if (!rating || rating === 0) {
+                showPopupMessage('Rating Required', 'Please select a rating before submitting.', 'info');
+                return;
+            }
+
+            console.log('Attempting to submit rating for order:', window.currentOrderForRating);
+
+            // Extract provider ID from order
+            let providerId = null;
+            if (window.currentOrderForRating) {
+                console.log('Order items:', window.currentOrderForRating.items);
+                
+                if (window.currentOrderForRating.items && window.currentOrderForRating.items.length > 0) {
+                    const item = window.currentOrderForRating.items[0];
+                    console.log('First item:', item);
+                    console.log('Item offering:', item.offering);
+                    
+                    if (item.offering) {
+                        console.log('Offering properties:', Object.keys(item.offering));
+                        if (item.offering.service_provider_id) {
+                            providerId = item.offering.service_provider_id;
+                            console.log('Found provider ID in offering:', providerId);
+                        }
+                    }
+                }
+                // Fallback: check if order has service_provider_id directly
+                if (!providerId && window.currentOrderForRating.service_provider_id) {
+                    providerId = window.currentOrderForRating.service_provider_id;
+                    console.log('Found provider ID in order:', providerId);
+                }
+            }
+
+            console.log('Final provider ID:', providerId);
+            console.log('Order ID being sent:', orderId);
+            console.log('Current user should own this order');
+
+            if (!providerId) {
+                showPopupMessage('Error', 'Could not find service provider information. Please try again.', 'error');
+                console.error('Order data:', window.currentOrderForRating);
+                return;
+            }
+
+            const submitBtn = event.target;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            const requestBody = {
+                service_provider_id: providerId,
+                service_order_id: orderId,
+                rating: rating,
+                review_notes: reviewText
+            };
+
+            console.log('Request body being sent:', requestBody);
+
+            try {
+                const response = await fetch('/api/ratings', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    console.error('Rating API error:', result);
+                    const debugMsg = result.debug_info ? '\n\nDebug: ' + result.debug_info : '';
+                    throw new Error(result.message + debugMsg);
+                }
+
+                // Show success message in pop-up
+                showPopupMessage('Thank You!', 'Your review has been submitted successfully.', 'success');
+
+                // Close modals and refresh profile after 2 seconds
+                setTimeout(() => {
+                    closePopupMessage();
+                    closeRatingModal();
+                    closeBookingDetailsModal();
+                    loadProfile();
+                }, 2000);
+
+            } catch (error) {
+                showPopupMessage('Error', error.message, 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Pop-up Message Functions
+        function showPopupMessage(title, message, type = 'success') {
+            const popupModal = document.getElementById('popupMessageModal');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupMessage = document.getElementById('popupMessage');
+            const popupIcon = document.getElementById('popupIcon');
+            
+            // Set icon and colors based on type
+            let iconClass = 'fa-check-circle';
+            let iconColor = 'text-green-600';
+            let bgColor = 'bg-green-50';
+            
+            if (type === 'error') {
+                iconClass = 'fa-exclamation-circle';
+                iconColor = 'text-red-600';
+                bgColor = 'bg-red-50';
+            } else if (type === 'info') {
+                iconClass = 'fa-info-circle';
+                iconColor = 'text-blue-600';
+                bgColor = 'bg-blue-50';
+            }
+            
+            popupIcon.className = `fas ${iconClass} text-4xl ${iconColor}`;
+            popupTitle.textContent = title;
+            popupMessage.textContent = message;
+            
+            const bgDiv = popupModal.querySelector('.w-16.h-16');
+            bgDiv.className = `w-16 h-16 ${bgColor} ${iconColor} rounded-full flex items-center justify-center mx-auto`;
+            
+            popupModal.classList.remove('hidden');
+        }
+
+        function closePopupMessage() {
+            const popupModal = document.getElementById('popupMessageModal');
+            if (popupModal) {
+                popupModal.classList.add('hidden');
+            }
+        }
+
         loadProfile();
     </script>
 
@@ -382,6 +735,7 @@
                         <h3 class="font-bold text-gray-900 text-xl mb-6">Settings</h3>
                         <div class="space-y-3">
                             <button
+                                onclick="togglePasswordModal('open')"
                                 class="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition group">
                                 <div class="flex items-center">
                                     <i class="fas fa-shield-alt w-8 text-green-500"></i>
@@ -389,18 +743,63 @@
                                 </div>
                                 <i class="fas fa-chevron-right text-xs text-gray-300"></i>
                             </button>
-                            <button
-                                class="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition group">
-                                <div class="flex items-center">
-                                    <i class="fas fa-bell w-8 text-green-500"></i>
-                                    <span class="font-medium">Notifications</span>
-                                </div>
-                                <i class="fas fa-chevron-right text-xs text-gray-300"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+        <!-- Password & Security Modal -->
+        <div id="passwordSecurityModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md shadow-xl">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Password & Security</h2>
+                    <button onclick="togglePasswordModal('close')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8">
+                    <div id="passwordChangeError" class="hidden mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100"></div>
+                    
+                    <form id="passwordChangeForm" onsubmit="submitPasswordChange(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                            <div class="relative">
+                                <input type="password" id="current_password" name="current_password" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                            <div class="relative">
+                                <input type="password" id="new_password" name="new_password" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                            <div class="relative">
+                                <input type="password" id="new_password_confirmation" name="new_password_confirmation" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-end space-x-4">
+                            <button type="button" onclick="togglePasswordModal('close')"
+                                class="px-6 py-3 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition">
+                                Cancel
+                            </button>
+                            <button type="submit" id="savePasswordBtn"
+                                class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-sm hover:shadow transition flex items-center">
+                                Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- Edit Profile Modal -->
         <div id="editProfileModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
             <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl my-8">
@@ -493,6 +892,61 @@
                 </div>
             </div>
         </div>
+        <!-- Pop-up Message Modal -->
+        <div id="popupMessageModal" class="fixed inset-0 bg-black/50 z-[80] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-sm shadow-xl overflow-hidden">
+                <div class="p-8 text-center space-y-4">
+                    <div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto">
+                        <i id="popupIcon" class="fas fa-check-circle text-4xl"></i>
+                    </div>
+                    <h2 id="popupTitle" class="text-2xl font-bold text-gray-900"></h2>
+                    <p id="popupMessage" class="text-gray-600"></p>
+                </div>
+                <div class="p-6 bg-gray-50 flex justify-center gap-3 border-t border-gray-100">
+                    <button onclick="closePopupMessage()" class="py-2 px-8 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Modal -->
+        <div id="ratingModal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md shadow-xl overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h2 class="text-xl font-bold text-gray-900">Rate & Review Service</h2>
+                    <button onclick="closeRatingModal()" class="text-gray-400 hover:text-gray-600 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-8 space-y-6">
+                    <div class="text-center pb-4 border-b border-gray-100">
+                        <p id="ratingOrderTitle" class="text-lg font-bold text-gray-900 capitalize"></p>
+                        <p id="ratingOrderId" class="text-sm text-gray-500 mt-1"></p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-gray-600 font-medium mb-3">How was your experience?</p>
+                        <div id="ratingStarContainer" class="flex justify-center gap-2">
+                            <!-- Stars will be added by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Your Review (Optional)</label>
+                        <textarea id="reviewNotesInput" placeholder="Share your feedback about the service quality, professionalism, and overall experience..." class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all resize-none h-24 text-gray-700 placeholder-gray-500"></textarea>
+                    </div>
+
+                    <input type="hidden" id="ratingInput" value="0">
+                </div>
+                <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button onclick="closeRatingModal()" class="py-2 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button onclick="submitRating()" class="py-2 px-6 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Booking Details Modal -->
         <div id="bookingDetailsModal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
@@ -531,8 +985,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
-                    <button onclick="closeBookingDetailsModal()" class="w-full py-3 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Close Window</button>
+                <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button id="completeOrderBtn" onclick="completeOrder()" class="py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition hidden flex items-center gap-2">
+                        <i class="fas fa-check"></i> Service Completed
+                    </button>
+                    <button id="openRatingModalBtn" onclick="openRatingModal()" class="py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition hidden flex items-center gap-2">
+                        <i class="fas fa-star"></i> Rate & Review
+                    </button>
+                    <button onclick="closeBookingDetailsModal()" class="py-3 px-6 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Close Window</button>
                 </div>
             </div>
         </div>

@@ -74,39 +74,8 @@ class BookingController extends Controller
             
            
             if (!$offeringId) {
-                $cat = \App\Models\Category::firstOrCreate(['name' => 'General Services'], ['description' => 'System Auto Category']);
-                
-                $sub = SubService::firstOrCreate(
-                    ['category_id' => $cat->id, 'service_name' => strtolower($request->service)],
-                    ['description' => 'Auto generated service']
-                );
-                
-                $area = \App\Models\ServiceArea::firstOrCreate(
-                    ['city_name' => 'Default City', 'area_name' => 'Default Area'],
-                    ['postal_code' => '0000']
-                );
-                
-                $provider = \App\Models\ServiceProvider::firstOrCreate(
-                    ['email' => 'provider@example.com'],
-                    [
-                        'full_name' => 'System Provider',
-                        'phone' => '00000000',
-                        'city' => 'Default City',
-                        'nid' => 'NID-' . time(),
-                        'service_area_id' => $area->id,
-                        'address' => 'N/A'
-                    ]
-                );
-                
-                $offering = ServiceProviderOffering::firstOrCreate([
-                    'service_provider_id' => $provider->id,
-                    'sub_service_id' => $sub->id,
-                ], [
-                    'price_charged' => $itemPrice > 0 ? $itemPrice : 500.00
-                ]);
-                
-                $offeringId = $offering->id;
-                $itemPrice = $offering->price_charged;
+                // If no offering is found, we can still create the order.
+                // It will be "Not Assigned" in the admin panel.
             }
 
             $order->total_amount = $itemPrice;
@@ -125,20 +94,15 @@ class BookingController extends Controller
                 $payment->service_order_id = $order->id;
                 $payment->payment_method = $request->payment_method;
                 $payment->payable_amount = $itemPrice;
+                // Admin gets 70%, Provider gets 30%
+                $payment->admin_amount = $itemPrice * 0.70;
+                $payment->provider_amount = $itemPrice * 0.30;
                 $payment->save();
             }
 
-            
-            $confirmation = new OrderConfirmation();
-            $confirmation->service_order_id = $order->id;
-            $confirmation->confirmation_status = 'confirmed';
-            $confirmation->final_amount = $itemPrice;
-            $confirmation->confirmed_at = now();
-            $confirmation->save();
-
             return response()->json([
                 'success' => true,
-                'message' => 'Order saved successfully',
+                'message' => 'Order submitted successfully. Waiting for admin approval.',
                 'booking_id' => $order->id,
                 'amount' => $order->total_amount
             ]);
@@ -159,10 +123,19 @@ class BookingController extends Controller
 
     public function complete($id)
     {
-        $order = ServiceOrder::find($id);
+        $order = ServiceOrder::with('payments')->find($id);
         
         if ($order) {
             $order->status = 'completed';
+            
+            // Check if payment method is COD (stored as 'cash')
+            $payment = $order->payments->first();
+            if ($payment && strtolower($payment->payment_method) === 'cash') {
+                $order->payment_status = 'paid';
+                $payment->payment_datetime = now();
+                $payment->save();
+            }
+            
             $order->save();
 
             $confirmation = new OrderConfirmation();
