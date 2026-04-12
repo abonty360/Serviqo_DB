@@ -362,6 +362,84 @@
                 modal.classList.add('hidden');
             }
         }
+
+        function togglePasswordModal(action) {
+            const modal = document.getElementById('passwordSecurityModal');
+            const form = document.getElementById('passwordChangeForm');
+            const errorDiv = document.getElementById('passwordChangeError');
+            
+            if (action === 'open') {
+                form.reset();
+                errorDiv.classList.add('hidden');
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        async function submitPasswordChange(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = document.getElementById('savePasswordBtn');
+            const errorDiv = document.getElementById('passwordChangeError');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            const currentPassword = form.current_password.value;
+            const newPassword = form.new_password.value;
+            const confirmPassword = form.new_password_confirmation.value;
+
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = "New passwords do not match";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errorDiv.textContent = "New password must be at least 6 characters";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+            submitBtn.disabled = true;
+            errorDiv.classList.add('hidden');
+
+            const token = localStorage.getItem("token");
+
+            try {
+                const response = await fetch("/api/change-password", {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        new_password_confirmation: confirmPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || result.errors?.new_password?.[0] || 'Failed to change password');
+                }
+
+                showPopupMessage('Success', 'Your password has been changed successfully!', 'success');
+                togglePasswordModal('close');
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
         // Rating and Review Functions
         function openRatingModal() {
             const order = window.currentOrderForRating;
@@ -657,6 +735,7 @@
                         <h3 class="font-bold text-gray-900 text-xl mb-6">Settings</h3>
                         <div class="space-y-3">
                             <button
+                                onclick="togglePasswordModal('open')"
                                 class="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition group">
                                 <div class="flex items-center">
                                     <i class="fas fa-shield-alt w-8 text-green-500"></i>
@@ -676,6 +755,59 @@
                     </div>
                 </div>
             </div>
+        <!-- Password & Security Modal -->
+        <div id="passwordSecurityModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-md shadow-xl">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Password & Security</h2>
+                    <button onclick="togglePasswordModal('close')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8">
+                    <div id="passwordChangeError" class="hidden mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100"></div>
+                    
+                    <form id="passwordChangeForm" onsubmit="submitPasswordChange(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                            <div class="relative">
+                                <input type="password" id="current_password" name="current_password" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                            <div class="relative">
+                                <input type="password" id="new_password" name="new_password" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                            <div class="relative">
+                                <input type="password" id="new_password_confirmation" name="new_password_confirmation" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition shadow-sm bg-gray-50 focus:bg-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-end space-x-4">
+                            <button type="button" onclick="togglePasswordModal('close')"
+                                class="px-6 py-3 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition">
+                                Cancel
+                            </button>
+                            <button type="submit" id="savePasswordBtn"
+                                class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-sm hover:shadow transition flex items-center">
+                                Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- Edit Profile Modal -->
         <div id="editProfileModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
             <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl my-8">

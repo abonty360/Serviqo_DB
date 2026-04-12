@@ -25,6 +25,7 @@ Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
     Route::post('/book', [BookingController::class, 'store']);
     Route::post('/book/{id}/complete', [BookingController::class, 'complete']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
      Route::post('/ratings', [RatingsController::class, 'store']);

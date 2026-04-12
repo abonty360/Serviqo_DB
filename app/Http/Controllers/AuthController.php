@@ -179,4 +179,42 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function changePassword(Request $request)
+    {
+        try {
+            $user = auth('api')->user();
+
+            $request->validate([
+                'current_password' => 'required',
+                'new_password' => 'required|string|min:6|confirmed',
+            ]);
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "Current password does not match"
+                ], 422);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            return response()->json([
+                "error" => false,
+                "message" => "Password changed successfully"
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                "error" => true,
+                "errors" => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => true,
+                "message" => "Failed to change password: " . $e->getMessage()
+            ], 500);
+        }
+    }
 }
