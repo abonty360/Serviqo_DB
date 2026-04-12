@@ -74,39 +74,8 @@ class BookingController extends Controller
             
            
             if (!$offeringId) {
-                $cat = \App\Models\Category::firstOrCreate(['name' => 'General Services'], ['description' => 'System Auto Category']);
-                
-                $sub = SubService::firstOrCreate(
-                    ['category_id' => $cat->id, 'service_name' => strtolower($request->service)],
-                    ['description' => 'Auto generated service']
-                );
-                
-                $area = \App\Models\ServiceArea::firstOrCreate(
-                    ['city_name' => 'Default City', 'area_name' => 'Default Area'],
-                    ['postal_code' => '0000']
-                );
-                
-                $provider = \App\Models\ServiceProvider::firstOrCreate(
-                    ['email' => 'provider@example.com'],
-                    [
-                        'full_name' => 'System Provider',
-                        'phone' => '00000000',
-                        'city' => 'Default City',
-                        'nid' => 'NID-' . time(),
-                        'service_area_id' => $area->id,
-                        'address' => 'N/A'
-                    ]
-                );
-                
-                $offering = ServiceProviderOffering::firstOrCreate([
-                    'service_provider_id' => $provider->id,
-                    'sub_service_id' => $sub->id,
-                ], [
-                    'price_charged' => $itemPrice > 0 ? $itemPrice : 500.00
-                ]);
-                
-                $offeringId = $offering->id;
-                $itemPrice = $offering->price_charged;
+                // If no offering is found, we can still create the order.
+                // It will be "Not Assigned" in the admin panel.
             }
 
             $order->total_amount = $itemPrice;

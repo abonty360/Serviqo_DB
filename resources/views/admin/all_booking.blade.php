@@ -230,6 +230,19 @@
         }
 
         async function updateBookingStatus(id, status) {
+            if (status === 'Order Confirmed') {
+                const booking = (window.pendingBookings || []).find(b => b.id === id);
+                const hasProvider = booking && booking.items && booking.items.some(item => 
+                    item.offering && 
+                    item.offering.provider && 
+                    item.offering.provider.full_name !== 'System Provider'
+                );
+                if (!hasProvider) {
+                    showToast('Please assign a provider before confirming the order.', 'error');
+                    return;
+                }
+            }
+
             const confirmed = await showConfirm(`Are you sure you want to ${status === 'Order Confirmed' ? 'approve' : 'decline'} this booking?`);
             if (!confirmed) return;
 
@@ -298,7 +311,10 @@
         }
 
         async function assignProvider(id, provider_id) {
-            if (!provider_id) return;
+            if (!provider_id) {
+                showToast('Please select a provider to assign.', 'error');
+                return;
+            }
             try {
                 const res = await fetch(`/api/admin/bookings/${id}/assign`, {
                     method: 'PATCH',
@@ -367,7 +383,7 @@
                 const customerName = b.customer ? `${b.customer.fname} ${b.customer.lname}` : 'Guest';
                 const location = b.customer ? `${b.customer.city}, ${b.customer.address || ''}` : 'N/A';
                 
-                const currentProvider = b.items && b.items[0] && b.items[0].offering ? b.items[0].offering.provider : null;
+                const currentProvider = b.items && b.items[0] && b.items[0].offering && b.items[0].offering.provider && b.items[0].offering.provider.full_name !== 'System Provider' ? b.items[0].offering.provider : null;
                 const customerCity = b.customer ? b.customer.city : '';
                 
                 // Get all required sub-service IDs for this order
@@ -380,8 +396,11 @@
                     if (!cityMatch) return false;
 
                     // Check if provider has all required sub-services
-                    const providerSubServiceIds = p.offerings ? p.offerings.map(o => o.sub_service_id) : [];
-                    return requiredSubServiceIds.every(id => providerSubServiceIds.includes(id));
+                    return requiredSubServiceIds.every(id => {
+                        const directMatch = p.sub_service_id && String(p.sub_service_id) === String(id);
+                        const arrayMatch = p.offerings ? p.offerings.some(o => String(o.sub_service_id) === String(id)) : false;
+                        return directMatch || arrayMatch;
+                    });
                 });
 
                 let providerOptions = `<option value="">Select Provider</option>`;
@@ -445,7 +464,7 @@
         function renderHistory(bookings) {
             return bookings.map(b => {
                 const customerName = b.customer ? `${b.customer.fname} ${b.customer.lname}` : 'Guest';
-                const provider = b.items && b.items[0] && b.items[0].offering && b.items[0].offering.provider 
+                const provider = b.items && b.items[0] && b.items[0].offering && b.items[0].offering.provider && b.items[0].offering.provider.full_name !== 'System Provider'
                                     ? b.items[0].offering.provider.full_name : null;
                 
                 let statusClass = "bg-gray-100 text-gray-600";

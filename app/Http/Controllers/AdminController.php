@@ -21,7 +21,9 @@ class AdminController extends Controller
 
     public function providers()
     {
-        $providers = ServiceProvider::with(['serviceArea', 'offerings'])->get();
+        $providers = ServiceProvider::with(['serviceArea', 'offerings'])
+            ->where('full_name', '!=', 'System Provider')
+            ->get();
         return response()->json($providers);
     }
 
@@ -70,10 +72,12 @@ class AdminController extends Controller
                     );
                     $subService = SubService::firstOrCreate(
                         [
-                            'service_name' => $offering['service_name'],
-                            'category_id' => $category->id
+                            'service_name' => strtolower($offering['service_name'])
                         ],
-                        ['description' => '']
+                        [
+                            'category_id' => $category->id,
+                            'description' => ''
+                        ]
                     );
 
                     ServiceProviderOffering::create([
@@ -193,7 +197,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'status' => 'nullable|in:assigned,not_assigned',
-            'provider_id' => 'nullable|exists:service_providers,id'
+            'provider_id' => 'required_if:status,assigned|exists:service_providers,id'
         ]);
 
         $order = ServiceOrder::with('items.offering')->find($id);
@@ -214,36 +218,8 @@ class AdminController extends Controller
                 $item->save();
             }
             $message = 'Provider assigned successfully';
-        } elseif ($request->status === 'assigned') {
-            // Find or create System Provider
-            $area = ServiceArea::firstOrCreate(
-                ['city_name' => 'Default City', 'area_name' => 'Default Area'],
-                ['postal_code' => '0000']
-            );
-
-            $provider = ServiceProvider::firstOrCreate(
-                ['email' => 'provider@example.com'],
-                [
-                    'full_name' => 'System Provider',
-                    'phone' => '00000000',
-                    'city' => 'Default City',
-                    'nid' => 'NID-SYSTEM',
-                    'service_area_id' => $area->id,
-                    'address' => 'System'
-                ]
-            );
-
-            foreach ($order->items as $item) {
-                $subServiceId = $item->offering->sub_service_id;
-                $offering = ServiceProviderOffering::firstOrCreate(
-                    ['service_provider_id' => $provider->id, 'sub_service_id' => $subServiceId],
-                    ['price_charged' => $item->item_price]
-                );
-                $item->service_provider_offering_id = $offering->id;
-                $item->save();
-            }
-            $message = 'Provider assigned successfully';
         } else {
+            // Unassign logic if needed, currently just marks status
             $message = 'Provider status marked as Not Assigned';
         }
 
