@@ -743,14 +743,6 @@
                                 </div>
                                 <i class="fas fa-chevron-right text-xs text-gray-300"></i>
                             </button>
-                            <button
-                                class="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition group">
-                                <div class="flex items-center">
-                                    <i class="fas fa-bell w-8 text-green-500"></i>
-                                    <span class="font-medium">Notifications</span>
-                                </div>
-                                <i class="fas fa-chevron-right text-xs text-gray-300"></i>
-                            </button>
                         </div>
                     </div>
                 </div>

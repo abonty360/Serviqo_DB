@@ -9,6 +9,10 @@ use App\Http\Controllers\RatingsController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/subservices', function () {
+    return \App\Models\Category::select('id', 'name')->get();
+});
+
 Route::middleware(['auth:api', 'prevent-back-history'])->group(function () {
 
     Route::get('/profile', function () {

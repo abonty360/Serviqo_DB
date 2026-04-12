@@ -34,39 +34,54 @@
                 <!-- Search Bar -->
                 <div
                     class="bg-white p-2 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-2 border border-green-100">
-                    <div
-                        class="flex-1 w-full flex items-center px-4 py-3 border-b md:border-b-0 md:border-r border-gray-100">
-                        <i class="fas fa-location-dot text-green-500 mr-3"></i>
-                        <input type="text" placeholder="Enter location" class="w-full focus:outline-none text-gray-700">
-                    </div>
                     <div class="flex-1 w-full flex items-center px-4 py-3">
                         <i class="fas fa-search text-green-500 mr-3"></i>
-                        <select class="w-full focus:outline-none text-gray-700 bg-transparent appearance-none">
-                            <option value="">Select service</option>
-                            <option value="cleaning">Home Cleaning</option>
-                            <option value="repairs">Plumbing & Repair</option>
-                            <option value="beauty">Beauty & Salon</option>
-                            <option value="painting">House Painting</option>
+                        <select id="serviceSelect" class="w-full focus:outline-none text-gray-700 bg-transparent appearance-none">
+                            <option value="">Select a service</option>
                         </select>
                     </div>
-                    <a href="{{ route('services') }}"
+                    <button id="bookBtn" onclick="handleServiceSelect()"
                         class="w-full md:w-auto px-10 py-4 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-all shadow-lg hover:shadow-green-200 text-center">
-                        Search
-                    </a>
+                        Book Now
+                    </button>
                 </div>
 
-                <!-- Popular Services Tags -->
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <span class="text-sm text-gray-500 py-1">Popular:</span>
-                    <a href="#"
-                        class="text-sm bg-white border border-gray-200 px-3 py-1 rounded-full hover:border-green-400 hover:text-green-600 transition">Cleaning</a>
-                    <a href="#"
-                        class="text-sm bg-white border border-gray-200 px-3 py-1 rounded-full hover:border-green-400 hover:text-green-600 transition">AC
-                        Repair</a>
-                    <a href="#"
-                        class="text-sm bg-white border border-gray-200 px-3 py-1 rounded-full hover:border-green-400 hover:text-green-600 transition">Pest
-                        Control</a>
-                </div>
+                <script>
+                    // Match the booking page service categories
+                    const serviceCategories = [
+                        { value: 'cleaning', label: 'Cleaning Services' },
+                        { value: 'repair', label: 'Appliance Repair' },
+                        { value: 'maintenance', label: 'Maintenance' },
+                        { value: 'beauty', label: 'Beauty & Makeover' },
+                        { value: 'pest', label: 'Pest Control' },
+                        { value: 'painting', label: 'Painting' },
+                        { value: 'car', label: 'Car Care Services' },
+                        { value: 'travel', label: 'Trip & Travels' },
+                        { value: 'health', label: 'Health & Care' },
+                        { value: 'shifting', label: 'House Shifting' }
+                    ];
+
+                    // Populate services on page load
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const serviceSelect = document.getElementById('serviceSelect');
+                        serviceCategories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.value;
+                            option.textContent = category.label;
+                            serviceSelect.appendChild(option);
+                        });
+                    });
+
+                    function handleServiceSelect() {
+                        const selectedService = document.getElementById('serviceSelect').value;
+                        if (!selectedService) {
+                            alert('Please select a service');
+                            return;
+                        }
+                        // Redirect to booking page with service parameter
+                        window.location.href = `/book?service=${encodeURIComponent(selectedService)}`;
+                    }
+                </script>
             </div>
         </div>
 
