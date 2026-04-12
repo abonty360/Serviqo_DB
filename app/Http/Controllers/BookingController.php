@@ -94,6 +94,9 @@ class BookingController extends Controller
                 $payment->service_order_id = $order->id;
                 $payment->payment_method = $request->payment_method;
                 $payment->payable_amount = $itemPrice;
+                // Admin gets 70%, Provider gets 30%
+                $payment->admin_amount = $itemPrice * 0.70;
+                $payment->provider_amount = $itemPrice * 0.30;
                 $payment->save();
             }
 

@@ -10,6 +10,8 @@ class Payment extends Model
         'service_order_id', 
         'payment_method', 
         'payable_amount', 
+        'admin_amount',
+        'provider_amount',
         'payment_datetime', 
         'transaction_reference'
     ];

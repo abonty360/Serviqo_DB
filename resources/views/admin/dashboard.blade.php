@@ -41,7 +41,7 @@
                         <i class="fas fa-users text-2xl"></i>
                     </div>
                     <h3 class="text-gray-500 font-medium mb-1">Service Providers</h3>
-                    <p class="text-3xl font-bold text-gray-900">...</p>
+                    <p class="text-3xl font-bold text-gray-900" id="totalProvidersCount">...</p>
                     <a href="/admin/service_providers" class="mt-4 text-green-600 hover:text-green-700 text-sm font-bold">Manage &rarr;</a>
                 </div>
             </div>
@@ -72,11 +72,19 @@
                 const user = await res.json();
                 document.getElementById("welcomeMessage").textContent = `Welcome back, ${user.fname} ${user.lname}!`;
 
+                // Fetch bookings count
                 const bookingsRes = await fetch("/api/admin/all_bookings", {
                     headers: { Authorization: "Bearer " + token }
                 });
                 const bookings = await bookingsRes.json();
                 document.getElementById("totalBookingsCount").textContent = bookings.length;
+
+                // Fetch providers count
+                const providersRes = await fetch("/api/admin/providers", {
+                    headers: { Authorization: "Bearer " + token }
+                });
+                const providers = await providersRes.json();
+                document.getElementById("totalProvidersCount").textContent = providers.length;
 
             } catch (err) {
                 console.error("Error loading dashboard info:", err);
