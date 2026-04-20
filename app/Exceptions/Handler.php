@@ -30,16 +30,16 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof BadRequestException) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-            ], 400);
+                if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return parent::render($request, $exception);
         }
 
         // Default response for unexpected exceptions
         return response()->json([
             'error' => true,
-            'message' => 'An unexpected error occurred',
+             'message' => 'An unexpected error occurred: ' . $exception->getMessage(),  
+              'exception' => get_class($exception),
+               'trace' => config('app.debug') ? $exception->getTraceAsString() : null, 
         ], 500);
 
     }

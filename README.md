@@ -43,7 +43,7 @@ php artisan key:generate
 5. **Migrate Tables**
 
 ```bash
-php artisan migration
+php artisan migrate
 ```
    
 7. **Run The Project**

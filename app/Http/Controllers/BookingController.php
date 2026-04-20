@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ServiceOrder;
+use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\OrderConfirmation;
+use App\Models\SubService;
+use App\Models\ServiceProviderOffering;
+use Illuminate\Http\Request;
+
+class BookingController extends Controller
+{
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'service' => 'required|string',
+                'date' => 'required|date|after_or_equal:today',
+                'time' => 'required',
+                'address' => 'required|string',
+                'phone' => ['required', 'string', 'regex:/^(?:\+?88|88)?01[3-9]\d{8}$/'],
+                'payment_method' => 'required|string'
+            ], [
+                'date.after_or_equal' => 'Past dates are invalid. Order will not be confirmed.',
+                'phone.regex' => 'Please provide a valid Bangladesh phone number.'
+            ]);
+
+            $user = auth('api')->user() ?? auth()->user();
+            $customerId = $user ? $user->id : 1; 
+
+            $realCustomer = \App\Models\Customer::find($customerId);
+            if (!$realCustomer) {
+                $firstCustomer = \App\Models\Customer::first();
+                if ($firstCustomer) {
+                    $customerId = $firstCustomer->id;
+                } else {
+                    $customer = \App\Models\Customer::create([
+                        'fname' => 'Guest',
+                        'lname' => 'User',
+                        'email' => 'guest_' . time() . '@example.com',
+                        'password' => bcrypt('password'),
+                        'city' => 'Unknown',
+                        'phone' => $request->phone
+                    ]);
+                    $customerId = $customer->id;
+                }
+            }
+
+            $scheduledDatetime = date('Y-m-d H:i:s', strtotime("$request->date $request->time"));
+
+            $order = new ServiceOrder();
+            $order->customer_id = $customerId;
+            $order->status = 'Pending';
+            $order->payment_status = 'unpaid';
+            $order->scheduled_datetime = $scheduledDatetime;
+            $order->save();
+
+            $subService = SubService::where('service_name', 'like', "%{$request->service}%")->first();
+            $offeringId = null; 
+            $itemPrice = $request->amount ?? 0.00;
+
+            if ($subService) {
+                $offering = ServiceProviderOffering::where('sub_service_id', $subService->id)->first();
+                if ($offering) {
+                    $offeringId = $offering->id;
+                    // Use database price if frontend didn't send one, otherwise trust frontend for now
+                    if (!$itemPrice) {
+                        $itemPrice = $offering->price_charged;
+                    }
+                }
+            }
+            
+           
+            if (!$offeringId) {
+                // If no offering is found, we can still create the order.
+                // It will be "Not Assigned" in the admin panel.
+            }
+
+            $order->total_amount = $itemPrice;
+            $order->save();
+
+            $orderItem = new OrderItem();
+            $orderItem->service_order_id = $order->id;
+            $orderItem->service_provider_offering_id = $offeringId;
+            $orderItem->quantity = 1;
+            $orderItem->item_price = $itemPrice;
+            $orderItem->item_status = 'pending';
+            $orderItem->save();
+
+            if ($request->payment_method) {
+                $payment = new Payment();
+                $payment->service_order_id = $order->id;
+                $payment->payment_method = $request->payment_method;
+                $payment->payable_amount = $itemPrice;
+                // Admin gets 70%, Provider gets 30%
+                $payment->admin_amount = $itemPrice * 0.70;
+                $payment->provider_amount = $itemPrice * 0.30;
+                $payment->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order submitted successfully. Waiting for admin approval.',
+                'booking_id' => $order->id,
+                'amount' => $order->total_amount
+            ]);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $firstError = collect($e->errors())->flatten()->first();
+            return response()->json([
+                'success' => false,
+                'message' => $firstError
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => substr($e->getMessage(), 0, 150)
+            ], 200); 
+        }
+    }
+
+    public function complete($id)
+    {
+        $order = ServiceOrder::with('payments')->find($id);
+        
+        if ($order) {
+            $order->status = 'completed';
+            
+            // Check if payment method is COD (stored as 'cash')
+            $payment = $order->payments->first();
+            if ($payment && strtolower($payment->payment_method) === 'cash') {
+                $order->payment_status = 'paid';
+                $payment->payment_datetime = now();
+                $payment->save();
+            }
+            
+            $order->save();
+
+            $confirmation = new OrderConfirmation();
+            $confirmation->service_order_id = $order->id;
+            $confirmation->confirmation_status = 'confirmed';
+            $confirmation->final_amount = $order->total_amount;
+            $confirmation->confirmed_at = now();
+            $confirmation->save();
+
+            return response()->json(['success' => true, 'message' => 'Order marked as completed']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Not a valid order'], 400);
+    }
+}
